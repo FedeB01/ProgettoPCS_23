@@ -1,3 +1,5 @@
+list(APPEND raffinamento_headers ${CMAKE_CURRENT_SOURCE_DIR}/ordinamento.hpp)
+
 list(APPEND raffinamento_headers ${CMAKE_CURRENT_SOURCE_DIR}/classe_raffinamento.hpp)
 
 list(APPEND raffinamento_sources ${CMAKE_CURRENT_SOURCE_DIR}/classe_raffinamento.cpp)

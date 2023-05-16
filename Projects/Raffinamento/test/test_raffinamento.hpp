@@ -17,29 +17,29 @@ TEST(TestEmpty, TestEmpty)
 
 /*
     // Testaggio da implementare in futuro quando il programma sarà finito
-    for(unsigned int c = 0; c < maglia.NumeroCell2D; c++)
+    for(unsigned int c = 0; c < maglia.NumeroT; c++)
     {
-      array<unsigned int, 3> lati = maglia.Cell2DLati[c];
+      array<unsigned int, 3> lati = maglia.LatiT[c];
 
       for(unsigned int e = 0; e < 3; e++)
       {
 
-         const unsigned int inzio = maglia.Cell1DVertici[lati[e]][0];
-         const unsigned int fine = maglia.Cell1DVertici[lati[e]][1];
+         const unsigned int inzio = maglia.VerticiL[lati[e]][0];
+         const unsigned int fine = maglia.VerticiL[lati[e]][1];
 
          //cout<<origine<<"\t"<<end<<endl;
 
-         auto findOrigin = find(maglia.Cell2DVertici[c].begin(), maglia.Cell2DVertici[c].end(), inzio);
+         auto findOrigin = find(maglia.VerticiT[c].begin(), maglia.VerticiT[c].end(), inzio);
 
-         if(findOrigin == maglia.Cell2DVertici[c].end())
+         if(findOrigin == maglia.VerticiT[c].end())
          {
            cerr << "Maglia sbagliata" << endl;
            return 2;
          }
 
-         auto trovaFine = find(maglia.Cell2DVertici[c].begin(), maglia.Cell2DVertici[c].end(), fine);
+         auto trovaFine = find(maglia.VerticiT[c].begin(), maglia.VerticiT[c].end(), fine);
 
-         if(trovaFine == maglia.Cell2DVertici[c].end())
+         if(trovaFine == maglia.VerticiT[c].end())
          {
            cerr << "Maglia sbagliata" << endl;
            return 3;

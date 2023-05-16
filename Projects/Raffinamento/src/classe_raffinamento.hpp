@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <map>
+#include <cmath>
+
 #include "Eigen/Eigen"
 
 using namespace std;
@@ -14,27 +15,30 @@ namespace LibreriaRaffinamento
 
 class MagliaTriangolare
 {
-    public:
+    private:
 
         struct Punti
         {
-        unsigned int NumeroCell0D = 0; //Numero di elementi in «Cell0D»
-        vector<Vector2d> Cell0DCoordinate = {}; //Coordinate (x,y) di «Cell0D» con dimensione «2xNumeroCell0D»
-        vector<unsigned int> Cell0DMarcatori = {}; //Marcatori di «Cell0D» con dimensione «1xNumeroCell0D»  //Modifica creando una mappa che associ all'indice il relativo marcatore (mi serve successivamente quando bisogna assegnare al nuovo punto il marcatore)
+        unsigned int NumeroP = 0; //Numero di elementi in «Cell0D»
+        vector<Vector2d> CoordinateP = {}; //Coordinate (x,y) di «Cell0D» con dimensione «2xNumeroP»
+        vector<unsigned int> MarcatoriP = {}; //Marcatori di «Cell0D» con dimensione «1xNumeroP»  //Modifica creando una mappa che associ all'indice il relativo marcatore (mi serve successivamente quando bisogna assegnare al nuovo punto il marcatore)
         } Punti;
 
         struct Lati
         {
-        unsigned int NumeroCell1D = 0; //Numero di elementi in «Cell1D»
-        vector<Vector2i> Cell1DVertici = {}; //Indici dei vertici (daId,aId) di «Cell1D» con dimensione «2xNumeroCell1D»
-        vector<unsigned int> Cell1DMarcatori = {}; //Marcatori di «Cell1D» con dimensione «1xNumeroCell1D»
+        unsigned int NumeroL = 0; //Numero di elementi in «Cell1D»
+        vector<Vector2i> VerticiL = {}; //Indici dei vertici (daId,aId) di «Cell1D» con dimensione «2xNumeroL»
+        vector<unsigned int> MarcatoriL = {}; //Marcatori di «Cell1D» con dimensione «1xNumeroL»
         } Lati;
 
         struct Triangoli
         {
-        unsigned int NumeroCell2D = 0; //Numero di elementi in «Cell2D»
-        vector<array<unsigned int, 3>> Cell2DVertici = {}; //Indici dei vertici (daId,aId) di «Cell1D» con dimensione «1xNumeroCell2DVertici[NumeroCell2D]»
-        vector<array<unsigned int, 3>> Cell2DLati = {}; //Indici di «Cell2D» e «Cell1D», dimensione «1xNumeroCell2DLati[NumeroCell2D]»
+        unsigned int NumeroT = 0; //Numero di elementi in «Cell2D»
+        vector<array<unsigned int, 3>> VerticiT = {}; //Indici dei vertici (daId,aId) di «Cell1D» con dimensione «1xNumeroT»
+        vector<array<unsigned int, 3>> LatiT = {}; //Indici di «Cell2D» e «Cell1D», dimensione «1xNumeroT»
+
+        vector<unsigned int> Punte= {}; //Indici dei punti, ordinati in senso antiorario, del lato massimo di ogni triangolo con dimensione «1xNumeroT»
+        vector<array<unsigned int, 2>> LatiTMax= {}; //Indici dei punti, ordinati in senso antiorario, del lato massimo di ogni triangolo con dimensione «1xNumeroT»
         } Triangoli;
 
 
@@ -50,16 +54,12 @@ class MagliaTriangolare
         ///
         ///
         ///
-        ///
-        ///
 
         ///\brief Importa le proprietà di «Cell0D» dalla filza «Cell0Ds.csv»
         ///\param maglia: una struttura «MagliaTriangolare»
         ///\return il risultato della lettura: vera se è un successo, falso altrimenti
         bool ImportaCell0Ds(const string& percorso);
 
-        ///
-        ///
         ///
         ///
         ///
@@ -72,22 +72,67 @@ class MagliaTriangolare
         ///
         ///
         ///
-        ///
-        ///
 
         ///\brief Importa le proprietà di «Cell2D» dalla filza «Cell2Ds.csv»
         ///\param maglia: una struttura «MagliaTriangolare»
         ///\return il risultato della lettura: vera se è un successo, falso altrimenti
         bool ImportaCell2Ds(const string& percorso);
 
+        ///
+        ///
+        ///
+
+        ///\brief Calcola l'area di un insieme di tre punti «distinti» descriventi un triangolo e individua il lato massimo
+        ///\param vertici: la matrice di dimensioni 3x3 dei punti del triangolo
+        ///\return vuoto perché si modificano i parametri in ingresso
+        void AreaT(vector<double>& aree);
+
+        //«AreaT» è una funzione della classe «MagliaTriangolare» che restituisce il vettore delle aree in corrispondenza dell'indice del triangolo
+
+        ///
+        ///
+        ///
+
+        ///\brief
+        ///\param
+        ///\return
+        vector<unsigned int> EstraiTriDaRaffinare(const unsigned int& teta);
+
+        ///
+        ///
+        ///
+
+        ///\brief
+        ///\param
+        ///\return
+        MagliaTriangolare Dissezionatore(const vector<unsigned int>& indici);
+
+        ///
+        ///
+        ///
+
+        ///\brief
+        ///\param
+        ///\return
+        void SmembraTriangolo(const unsigned int& indicePM,
+                              const array<unsigned int,2>& indiciLM,
+                              const unsigned int& indicePNT,
+                              const array<unsigned int,2>& indiciLMP,
+                              const unsigned int& indicePMP);
+
+
+        ///
+        ///
+        ///
+
+        ///\brief
+        ///\param
+        ///\return
+        void TrovaTriangoloOpposto(unsigned int& indiceT,
+                                   const array<unsigned int,2>& indiciLM);
+
 };
 
-
-
-///\brief Calcola l'area di un insieme di tre punti «distinti» descriventi un triangolo e individua il lato massimo
-///\param vertici: la matrice di dimensioni 3x3 dei punti del triangolo
-///\return vuoto perché si modificano i parametri in ingresso
-void AreaT(const MatrixXd& vertici, double& area, VectorXd& latoMax);
 
 /*
 
