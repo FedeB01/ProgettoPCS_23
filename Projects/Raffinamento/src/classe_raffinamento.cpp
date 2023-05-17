@@ -128,10 +128,10 @@ bool MagliaTriangolare::ImportaCell1Ds(const string& percorso)
     istringstream convertitore(linea);
 
     unsigned int id, marcatore;
-    Vector2i vertici;
+    array<unsigned int, 2> vertici;
 
     //La variabile «id» viene usata per scartare l'informazione dell'identificatore già implicita nel vettore
-    convertitore >>  id >> marcatore >> vertici(0) >> vertici(1);
+    convertitore >>  id >> marcatore >> vertici[0] >> vertici[1];
 
     Lati.VerticiL.push_back(vertici);
     Lati.MarcatoriL.push_back(marcatore);
@@ -250,6 +250,7 @@ void MagliaTriangolare::AreaT(vector<double>& vettoreAree)
           lato = lunghezze[2];
           prodScalare = (puntiRelativi.col(0)).dot(-puntiRelativi.col(2));
           Triangoli.LatiTMax.push_back({vertici[0], vertici[1]}); //Assegnazione degli indici dei punti del lato massimo
+          Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][0]]); //Memorizzazione del marcatore associato al massimo lato
           Triangoli.Punte.push_back(vertici[2]); //Memorizzazione del punto opposto al lato massimo
       }
       else if(base == lunghezze[1])
@@ -257,6 +258,7 @@ void MagliaTriangolare::AreaT(vector<double>& vettoreAree)
           lato = lunghezze[0];
           prodScalare = (puntiRelativi.col(1)).dot(-puntiRelativi.col(0));
           Triangoli.LatiTMax.push_back({vertici[1], vertici[2]}); //Assegnazione degli indici dei punti del lato massimo
+          Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][1]]); //Memorizzazione del marcatore associato al massimo lato
           Triangoli.Punte.push_back(vertici[0]); //Memorizzazione del punto opposto al lato massimo
       }
       else
@@ -264,6 +266,7 @@ void MagliaTriangolare::AreaT(vector<double>& vettoreAree)
           lato = lunghezze[1];
           prodScalare = (puntiRelativi.col(2)).dot(-puntiRelativi.col(1));
           Triangoli.LatiTMax.push_back({vertici[2], vertici[0]}); //Assegnazione degli indici dei punti del lato massimo
+          Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][2]]); //Memorizzazione del marcatore associato al massimo lato
           Triangoli.Punte.push_back(vertici[1]); //Memorizzazione del punto opposto al lato massimo
       }
 
@@ -349,17 +352,19 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
             puntoMedio<<(Punti.CoordinateP[indiciPunti[0]][0]+Punti.CoordinateP[indiciPunti[1]][0])/2,
                         (Punti.CoordinateP[indiciPunti[0]][1]+Punti.CoordinateP[indiciPunti[1]][1])/2;
             magliaR.Punti.CoordinateP.push_back(puntoMedio);
+            magliaR.Punti.MarcatoriP.push_back(Triangoli.MarcatoriLatiTMax[iTCorrente]);
             magliaR.Punti.NumeroP++;
 
             //Inserimento dei sottotriangoli del triangolo si partenza il quale non presenta un punto medio precedente
             magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indiciPunti[1], indicePunta});
             magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indicePunta, indiciPunti[0]});
 
+            magliaR.Triangoli.NumeroT+=2;
             statoTriangolo[iTCorrente] = 1;
 
             do
             {
-                TrovaTriangoloOpposto(iTCorrente, indiciPunti);
+                iTCorrente = TrovaTriangoloOpposto(iTCorrente, indiciPunti);
 
                 if(iTCorrente == Triangoli.NumeroT) //Si esce dal ciclo while perché in questo caso il triangolo successivo non esiste dato che il lato massimo di quello precedente si affaccia al bordo della maglia triangolare
                 {
@@ -382,6 +387,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indiciPunti[0], magliaR.Triangoli.VerticiT[k][h]});
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, magliaR.Triangoli.VerticiT[k][h], indiciPunti[1]});
 
+                    magliaR.Triangoli.NumeroT++;
                     magliaR.Triangoli.VerticiT.erase(magliaR.Triangoli.VerticiT.begin()+k);
 
                     v = 0;
@@ -394,6 +400,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indiciPunti[1], indicePunta});
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indicePunta, indiciPunti[0]});
 
+                    magliaR.Triangoli.NumeroT+=2;
                     statoTriangolo[iTCorrente] = 1;
 
                     v = 0;
@@ -401,14 +408,14 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                 else //In questo caso il triangolo successivo esiste (ovvero il lato massimo del triangolo precednete non si affaccia al bordo), non è stato dissezionato e non ha il lato massimo coincidente con quello del triangolo precedente; di conseguenza bisogna smembrare il triangolo in questione
                 {
 
-                    magliaR.SmembraTriangolo(magliaR.Punti.NumeroP,Triangoli.LatiTMax[iTCorrente],Triangoli.Punte[iTCorrente],indiciPunti,indicePunta);
-
-                    indiciPunti = Triangoli.LatiTMax[iTCorrente];
                     indicePunta = Triangoli.Punte[iTCorrente];
+                    magliaR.SmembraTriangolo(magliaR.Punti.NumeroP,Triangoli.LatiTMax[iTCorrente],indicePunta,indiciPunti,magliaR.Punti.NumeroP-1);
+                    indiciPunti = Triangoli.LatiTMax[iTCorrente];
 
                     puntoMedio<<(Punti.CoordinateP[indiciPunti[0]][0]+Punti.CoordinateP[indiciPunti[1]][0])/2,
                                 (Punti.CoordinateP[indiciPunti[0]][1]+Punti.CoordinateP[indiciPunti[1]][1])/2;
                     magliaR.Punti.CoordinateP.push_back(puntoMedio);
+                    magliaR.Punti.MarcatoriP.push_back(Triangoli.MarcatoriLatiTMax[iTCorrente]);
                     magliaR.Punti.NumeroP++;
 
                     statoTriangolo[iTCorrente] = 1;
@@ -421,6 +428,44 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
 
         }
     }
+
+
+    //Aggiunta dei triangoli non dissezionati
+    for(unsigned int i=0; i<Triangoli.NumeroT; i++)
+        if(statoTriangolo[i] == 0)
+        {
+            magliaR.Triangoli.VerticiT.push_back(Triangoli.VerticiT[i]);
+            magliaR.Triangoli.NumeroT++;
+        }
+
+    /*
+    //Stampa delle coordinate dei punti originali e raffinati
+    cout<<"\tPunti originali\n";
+    for(unsigned int i=0; i<Punti.NumeroP; i++)
+        cout<<Punti.CoordinateP[i][0]<<","<<Punti.CoordinateP[i][1]<<"\n";
+    cout<<"\n\tPunti raffinati\n";
+    for(unsigned int i=0; i<magliaR.Punti.NumeroP; i++)
+        cout<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<"\n";
+
+
+    //Stampa delle coordinte di ciascun triangolo della maglia triangolare in un formato rappresentabile per geogebra
+    cout<<"\tMaglia originali\n\n";
+    for(unsigned int i=0; i<Triangoli.NumeroT; i++)
+    {
+        cout<<"Poligono(";
+        for(unsigned int j=0; j<Triangoli.VerticiT[i].size(); j++)
+            cout<<"("<<Punti.CoordinateP[Triangoli.VerticiT[i][j]][0]<<","<<Punti.CoordinateP[Triangoli.VerticiT[i][j]][1]<<"),";
+        cout<<"("<<Punti.CoordinateP[Triangoli.VerticiT[i][0]][0]<<","<<Punti.CoordinateP[Triangoli.VerticiT[i][0]][1]<<"))\n";
+    }
+    cout<<"\n\n\n\tMaglia raffinata\n\n";
+    for(unsigned int i=0; i<magliaR.Triangoli.NumeroT; i++)
+    {
+        cout<<"Poligono(";
+        for(unsigned int j=0; j<magliaR.Triangoli.VerticiT[i].size(); j++)
+            cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][1]<<"),";
+        cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][1]<<"))\n";
+    }
+    */
 
     return magliaR;
 }
@@ -456,6 +501,8 @@ void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice 
         triangolo[1] = indicePNT;
         triangolo[2] = indiciLM[0];
         Triangoli.VerticiT.push_back(triangolo);
+
+        Triangoli.NumeroT+=3;
     }
     else
     {
@@ -469,6 +516,7 @@ void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice 
         triangolo[1] = indicePMP;
         triangolo[2] = indiciLM[0];
         Triangoli.VerticiT.push_back(triangolo);
+        Triangoli.NumeroT+=3;
     }
 }
 
@@ -476,21 +524,143 @@ void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice 
 ///
 ///
 
-void MagliaTriangolare::TrovaTriangoloOpposto(unsigned int& indiceT, const array<unsigned int,2>& indiciLM)
+unsigned int MagliaTriangolare::TrovaTriangoloOpposto(unsigned int& indiceT, const array<unsigned int,2>& indiciLM)
 {
     //L'indice del triangolo successivo è individuato (se esistente) dal seguente ciclo «for»
-    for(unsigned int j=0; j<Triangoli.NumeroT; j++)
+    unsigned int j;
+    for(j=0; j<Triangoli.NumeroT; j++)
     {
         if(find(Triangoli.VerticiT[j].begin(),Triangoli.VerticiT[j].end(),indiciLM[0]) != Triangoli.VerticiT[j].end() &&
            find(Triangoli.VerticiT[j].begin(),Triangoli.VerticiT[j].end(),indiciLM[1]) != Triangoli.VerticiT[j].end() &&
            j != indiceT) //Le condizioni vno trovano (se esiste) un triangolo che ha contemporaneamente i medesimi punti del lato massimo ma diverso indice dal triangolo corrente
-        {
-            indiceT = j;
-            break; //Si esce dal ciclo for perché il triangolo successivo esiste
-        }
-        else
-            indiceT = j;
+            break;
     }
+    return j;
+}
+
+///
+///
+///
+
+void MagliaTriangolare::CostruisciLati()
+{
+
+    Lati.VerticiL.reserve(3*Triangoli.NumeroT); //Stima massima dei lati; non vi saranno mai
+    Triangoli.LatiT.resize(Triangoli.NumeroT);
+
+    array<unsigned int,2> lato;
+    array<unsigned int,3> triangolo;
+
+    //Un lato sarà condiviso da un solo altro triangolo da quello considerato e se per uno è in senso antiorario per l'altro è in senso orario; in altre parole il lato (n_1,n_2)
+    //orientato in senso antiorario in un triangolo è nell'altro orientato in senso antiorario e quindi in quest'ultimo è salvato come (n_2,n_1) per mantenere il senso antiorario.
+    //Pertanto è sufficiente controllare che l'inverso di un lato sia presente nel vettore dei lati
+
+    for(unsigned int i=0; i<Triangoli.NumeroT; i++) //Per ogni triangolo
+    {
+        triangolo = Triangoli.VerticiT[i];
+
+        for(unsigned int j=0; j<3; j++)
+        {
+            lato = {triangolo[(j==2? 0 :j+1)], triangolo[j]};
+            unsigned int k = 0;
+
+            for(k=0; k<Lati.VerticiL.size(); k++)
+                if(lato==Lati.VerticiL[k])
+                    break;
+
+            if(k == Lati.VerticiL.size())
+            {
+                Lati.VerticiL.push_back({lato[1],lato[0]}); //Si inserisce il lato invertito
+                Lati.NumeroL++;
+                Triangoli.LatiT[i][j] = Lati.NumeroL-1;
+
+                //I seguenti «if» successivi vengono impiegati per individuare il marcatore del lato
+                if(Punti.MarcatoriP[lato[0]] == 0 || Punti.MarcatoriP[lato[1]] == 0)
+                    Lati.MarcatoriL.push_back(0);
+                else if(Punti.MarcatoriP[lato[0]] != Punti.MarcatoriP[lato[1]])
+                    Lati.MarcatoriL.push_back(0);
+                else if(Punti.MarcatoriP[lato[0]] != 1 &&
+                        Punti.MarcatoriP[lato[0]] != 2 &&
+                        Punti.MarcatoriP[lato[0]] != 3 &&
+                        Punti.MarcatoriP[lato[0]] != 4)
+                    Lati.MarcatoriL.push_back(Punti.MarcatoriP[lato[0]]);
+                else
+                    Lati.MarcatoriL.push_back(Punti.MarcatoriP[lato[1]]);
+            }
+            else
+            {
+                Triangoli.LatiT[i][j] = k;
+            }
+        }
+    }
+}
+
+///
+///
+///
+
+void MagliaTriangolare::EsportaMaglia(const string& formato)
+{
+    string nomeFilza;
+    ofstream filza;
+
+    //Esportazione punti
+
+    nomeFilza = "./01 Punti."+formato;
+    filza.open(nomeFilza);
+
+    if (filza.fail())
+        cerr<<"Errore durante la creazione delle filze in uscita."<<endl;
+
+    filza<<"Id Marcatore X Y"<<endl;
+
+    for(unsigned int i=0; i<Punti.NumeroP; i++)
+        filza<<i<<" "
+             <<Punti.MarcatoriP[i]<<" "
+             <<Punti.CoordinateP[i][0]<<" "
+             <<Punti.CoordinateP[i][1]<<endl;
+
+    filza.close();
+
+
+    //Esportazione lati
+    nomeFilza = "./02 Lati."+formato;
+    filza.open(nomeFilza);
+
+    if (filza.fail())
+        cerr<<"Errore durante la creazione delle filze in uscita."<<endl;
+
+    filza<<"Id Marcatore Origine Fine"<<endl;
+
+    for(unsigned int i=0; i<Lati.NumeroL; i++)
+        filza<<i<<" "
+             <<Lati.MarcatoriL[i]<<" "
+             <<Lati.VerticiL[i][0]<<" "
+             <<Lati.VerticiL[i][1]<<endl;
+
+    filza.close();
+
+
+    //Esportazione triangoli
+    nomeFilza = "./03 Triangoli."+formato;
+    filza.open(nomeFilza);
+
+    if (filza.fail())
+        cerr<<"Errore durante la creazione delle filze in uscita."<<endl;
+
+    filza<<"Id Vertici Lati"<<endl;
+
+    for(unsigned int i=0; i<Triangoli.NumeroT; i++)
+        filza<<i<<" "
+             <<Triangoli.VerticiT[i][0]<<" "
+             <<Triangoli.VerticiT[i][1]<<" "
+             <<Triangoli.VerticiT[i][2]<<" "
+             <<Triangoli.LatiT[i][0]<<" "
+             <<Triangoli.LatiT[i][1]<<" "
+             <<Triangoli.LatiT[i][2]<<endl;
+
+    filza.close();
+
 }
 
 }

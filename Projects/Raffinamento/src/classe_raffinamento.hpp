@@ -20,14 +20,14 @@ class MagliaTriangolare
         struct Punti
         {
         unsigned int NumeroP = 0; //Numero di elementi in «Cell0D»
-        vector<Vector2d> CoordinateP = {}; //Coordinate (x,y) di «Cell0D» con dimensione «2xNumeroP»
-        vector<unsigned int> MarcatoriP = {}; //Marcatori di «Cell0D» con dimensione «1xNumeroP»  //Modifica creando una mappa che associ all'indice il relativo marcatore (mi serve successivamente quando bisogna assegnare al nuovo punto il marcatore)
+        vector<Vector2d> CoordinateP = {}; //Coordinate (x,y) di «Cell0D» con dimensione «2xNumeroP» (Vector2d è necessario per la relativa norma)
+        vector<unsigned int> MarcatoriP = {}; //Marcatori di «Cell0D» con dimensione «1xNumeroP»
         } Punti;
 
         struct Lati
         {
         unsigned int NumeroL = 0; //Numero di elementi in «Cell1D»
-        vector<Vector2i> VerticiL = {}; //Indici dei vertici (daId,aId) di «Cell1D» con dimensione «2xNumeroL»
+        vector<array<unsigned int, 2>> VerticiL = {}; //Indici dei vertici (daId,aId) di «Cell1D» con dimensione «2xNumeroL»
         vector<unsigned int> MarcatoriL = {}; //Marcatori di «Cell1D» con dimensione «1xNumeroL»
         } Lati;
 
@@ -39,6 +39,7 @@ class MagliaTriangolare
 
         vector<unsigned int> Punte= {}; //Indici dei punti, ordinati in senso antiorario, del lato massimo di ogni triangolo con dimensione «1xNumeroT»
         vector<array<unsigned int, 2>> LatiTMax= {}; //Indici dei punti, ordinati in senso antiorario, del lato massimo di ogni triangolo con dimensione «1xNumeroT»
+        vector<unsigned int> MarcatoriLatiTMax= {}; //Marcatori dei lati massimi, utile per sapere il marcatore del punto medio venturo, con dimensione «1xNumeroT»
         } Triangoli;
 
 
@@ -120,6 +121,15 @@ class MagliaTriangolare
                               const array<unsigned int,2>& indiciLMP,
                               const unsigned int& indicePMP);
 
+        ///
+        ///
+        ///
+
+        ///\brief
+        ///\param
+        ///\return
+        unsigned int TrovaTriangoloOpposto(unsigned int& indiceT,
+                                           const array<unsigned int,2>& indiciLM);
 
         ///
         ///
@@ -128,8 +138,16 @@ class MagliaTriangolare
         ///\brief
         ///\param
         ///\return
-        void TrovaTriangoloOpposto(unsigned int& indiceT,
-                                   const array<unsigned int,2>& indiciLM);
+        void CostruisciLati();
+
+        ///
+        ///
+        ///
+
+        ///\brief
+        ///\param
+        ///\return
+        void EsportaMaglia(const string& formato);
 
 };
 

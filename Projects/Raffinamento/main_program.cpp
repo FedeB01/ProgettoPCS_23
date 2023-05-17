@@ -34,8 +34,8 @@ int main()
   */
 
   magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
-
-  //Manca solo la funzione di esportazione per ricreare le tre filze Excel che descrivono la maglia triangolare
+  magliaRaffinata.CostruisciLati();
+  magliaRaffinata.EsportaMaglia("csv");
 
   return 0;
 }
