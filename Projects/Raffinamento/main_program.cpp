@@ -5,37 +5,49 @@ using namespace LibreriaRaffinamento;
 int main()
 {
 
-  MagliaTriangolare maglia, magliaRaffinata;
-  bool verifica = maglia.ImportaMaglia("../Raffinamento/Dataset/Test1/Cell0Ds.csv",
-                                       "../Raffinamento/Dataset/Test1/Cell1Ds.csv",
-                                       "../Raffinamento/Dataset/Test1/Cell2Ds.csv");
+  bool statoImportazione, statoEsportazione;
+  vector<unsigned int> triangoliDaRaffinare;
 
-  if(!verifica)
+
+    //Programma applicato alla prima maglia triangolare, i cui dati sono contenunti nel percorso «../Raffinamento/Dataset/Test1»
+  MagliaTriangolare primaMaglia, primaMagliaRaffinata;
+  statoImportazione = primaMaglia.ImportaMaglia("../Raffinamento/Dataset/Test1/Cell0Ds.csv", //Si importa la maglia
+                                                "../Raffinamento/Dataset/Test1/Cell1Ds.csv",
+                                                "../Raffinamento/Dataset/Test1/Cell2Ds.csv");
+
+  if(!statoImportazione) //Si verifica che l'importazione è avvenuta con successo
       return 1;
 
-  //Per qualche motivazione QtCreator non mi permette di inserire un numero se non avvio il programma in modalità terminale
-  //(Barra a sinistra>«Projects»>«Run»> sotto «Build & Run»>seleziona «Run in terminal»); per il momento lo inserisco manulamente
-  unsigned int teta = 10;
-  /*
-    //Codice per ricevere in ingresso il valore di teta dall'utente una volta misurato il numero di triangoli
-  cout<<"Totale: "<< vettoreOrdAree.size()<<" triangoli\n"
-      <<"Inserire come numero intero il numero di triangoli da raffinare a partire da quelli con area maggiore: ";
-  cin >> teta;
-  cout<<"Numero inserito: "<<teta<<"\n";
-  */
+  triangoliDaRaffinare = primaMaglia.EstraiTriangoliDaRaffinare(); //Si estraggono i triangoli da raffinare
 
-  vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriDaRaffinare(teta);
+  primaMagliaRaffinata = primaMaglia.Dissezionatore(triangoliDaRaffinare); //Si raffina la maglia
+  primaMagliaRaffinata.CostruisciLati(); //Si costruiscono i lati dai dati raffinati completando la maglia
+  statoEsportazione = primaMagliaRaffinata.EsportaMaglia("#Prima Maglia","csv"); //Si esporta la maglia in tra nuove filza
 
-  /*
-    //Stampa degli indici dei triangoli da raffinare
-  for(unsigned int i=0; i<triangoliDaRaffinare.size(); i++)
-      cout<<triangoliDaRaffinare[i]<<"\t";
-  cout<<"\n";
-  */
+  if(!statoEsportazione) //Si verifica che l'esportazione è avvenuta con successo
+      return 1;
 
-  magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
-  magliaRaffinata.CostruisciLati();
-  magliaRaffinata.EsportaMaglia("csv");
+
+
+    //Programma applicato alla seconda maglia triangolare, i cui dati sono contenunti nel percorso «../Raffinamento/Dataset/Test2»
+  MagliaTriangolare secondaMaglia, secondaMagliaRaffinata; //Si ripetono gli stessi passaggi della prima maglia ma per la seconda
+  statoImportazione = secondaMaglia.ImportaMaglia("../Raffinamento/Dataset/Test2/Cell0Ds.csv",
+                                                  "../Raffinamento/Dataset/Test2/Cell1Ds.csv",
+                                                  "../Raffinamento/Dataset/Test2/Cell2Ds.csv");
+
+  if(!statoImportazione)
+      return 1;
+
+  triangoliDaRaffinare = secondaMaglia.EstraiTriangoliDaRaffinare();
+
+  secondaMagliaRaffinata = secondaMaglia.Dissezionatore(triangoliDaRaffinare);
+  secondaMagliaRaffinata.CostruisciLati();
+  statoEsportazione = secondaMagliaRaffinata.EsportaMaglia("#Seconda Maglia","csv");
+
+  if(!statoEsportazione)
+      return 1;
+
+  cout<<"\nFinito ;)\n\n";
 
   return 0;
 }

@@ -3,7 +3,6 @@
 
 #include <list>
 #include <map>
-
 #include "Eigen/Eigen"
 
 using namespace std;
@@ -11,7 +10,7 @@ using namespace Eigen;
 
 namespace LibreriaOrdinamento {
 
-  //Struttura creata solo per avere dei numeri in cui l'operatore di maggiore e minore fossero invertiti (per cui 9>2 diventa 9<2 e quindi e falso)
+  //La struttura «Decrescente» permette di applicare l'algoritmo «HeapSort» ordinando però i valori in modo decrescente
   struct Decrescente
   {
     double valore;
@@ -20,7 +19,9 @@ namespace LibreriaOrdinamento {
   };
 
 
-  //Funzione per creare velocemente un vettore formato dalla struttura «Decrescente» coi medesimi valori di vettore
+  ///\brief Crea un vettore formato di strutture «Decrescente» coi medesimi valori memorizzati nel vettore in ingresso
+  ///\param vettore: vettore di riferimento che si vuole specchiare
+  ///\return il vettore di elementi «Decrescente»
   template<typename T> vector<Decrescente> CreaVettoreDecrescente(const vector<T>& vettore)
   {
       vector<Decrescente> vettoreD;
@@ -36,16 +37,16 @@ namespace LibreriaOrdinamento {
   }
 
 
-  //Riformulazione dell'operazione di flusso «<<» per l'oggetto «Decrescente» ma che in pratica nel programma non viene mai usata (assieme anche all'operazione
-  //di disuguaglianza «!=», definita súbito dopo); credo si faccia per completezza in caso un programmatore in futuro voglia usare proprio queste operazioni
+  //Riformulazione dell'operazione di flusso «<<» per l'oggetto «Decrescente» ma che in pratica nel programma non viene
+  //mai usata (assieme anche all'operazione di disuguaglianza «!=», definita súbito dopo); si aggiunge comunque per completezza
   inline ostream &operator<<(ostream &os, const Decrescente &oggetto)
   {
     os << oggetto.valore;
     return os;
   }
 
-  //Cambio delle normali operazioni buleane uguale (==), diverso (!=), minore (<) e maggiore (>) per la struttura «decreasingInt»
-  //Nel complesso quello che fa è invertire il maggiore (>) con il miniore (<) cosicché l'algoritmo successivo può anche ordinare numeri decrescenti
+  //Riformulaizone delle operazioni buleane uguale (==), diverso (!=), minore (<) e maggiore (>) per la struttura «Decrescente»
+  //Nel complesso si inverte il maggiore (>) con il miniore (<) cosicché l'algoritmo successivo possa anche ordinare decrescentemente
   inline bool operator==(const Decrescente &oggetto1, const Decrescente &oggetto2)
   {
     return oggetto1.valore == oggetto2.valore;
@@ -72,7 +73,7 @@ namespace LibreriaOrdinamento {
 
     unsigned int i = 0;
     vector<T> mucchioBin = v;
-    T bicerino; //Variabile per memorizzare temporaneamente l'elemento da scambiare; il nome è l'adattamento del piemontese «bicerin» che letteralmente significa «bicchierino»
+    T bicerino; //Variabile per memorizzare temporaneamente l'elemento da scambiare (il nome è l'adattamento del piemontese «bicerin» che letteralmente significa «bicchierino»)
 
 
     //Questo ciclo «while» costruire da una lista il mucchio binario (traduzione dell'inglese «heap binary»),

@@ -11,40 +11,26 @@ namespace LibreriaRaffinamento
 ///
 
 bool MagliaTriangolare::ImportaMaglia(const string& percorso0,
-                   const string& percorso1,
-                   const string& percorso2)
+                                      const string& percorso1,
+                                      const string& percorso2)
 {
-
-  if(!ImportaCell0Ds(percorso0))
+  if(!ImportaPunti(percorso0))
       return false;
-  /*else //Stampa della mappa dei marcatori
-  {
-      cout << "Cell0D marcatori:" << endl;
-      for(unsigned int i = 0; i < Punti.MarcatoriP.size(); i++)
-        cout << "id:\t" << i << "\t marcatore:" << Punti.MarcatoriP[i]<< "\n\n";
-  }*/
 
-  if(!ImportaCell1Ds(percorso1))
+  if(!ImportaLati(percorso1))
       return false;
-  /*else //Stampa della mappa dei marcatori
-  {
-      cout << "Cell1D marcatori:" << endl;
-      for(unsigned int i = 0; i < Lati.MarcatoriL.size(); i++)
-          cout << "id: " << i << "\t marcatore: " << Lati.MarcatoriL[i]<< "\n\n";
-  }*/
 
-  if(!ImportaCell2Ds(percorso2))
+  if(!ImportaTriangoli(percorso2))
       return false;
 
   return true;
-
 }
 
 ///
 ///
 ///
 
-bool MagliaTriangolare::ImportaCell0Ds(const string& percorso)
+bool MagliaTriangolare::ImportaPunti(const string& percorso)
 {
 
 
@@ -95,7 +81,7 @@ bool MagliaTriangolare::ImportaCell0Ds(const string& percorso)
 ///
 ///
 
-bool MagliaTriangolare::ImportaCell1Ds(const string& percorso)
+bool MagliaTriangolare::ImportaLati(const string& percorso)
 {
 
   ifstream filza;
@@ -145,7 +131,7 @@ bool MagliaTriangolare::ImportaCell1Ds(const string& percorso)
 ///
 ///
 
-bool MagliaTriangolare::ImportaCell2Ds(const string& percorso)
+bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 {
 
   ifstream filza;
@@ -200,7 +186,7 @@ bool MagliaTriangolare::ImportaCell2Ds(const string& percorso)
 ///
 ///
 
-void MagliaTriangolare::AreaT(vector<double>& vettoreAree)
+vector<double> MagliaTriangolare::OrdinaTriangoliPerArea()
 {
 
   //Faccio notare che la matrice «punti» ha dimensione 3x3 perché ogni colonna rappresenta un punto e la terza riga (2,0)-(2,1)-(2,2)
@@ -212,6 +198,7 @@ void MagliaTriangolare::AreaT(vector<double>& vettoreAree)
 
   Triangoli.LatiTMax.reserve(Triangoli.NumeroT);
 
+  vector<double> vettoreAree;
   Vector3d lunghezze; //Vettore delle distanze tra i tre punti considerati
   MatrixXd puntiRelativi(2,3); //Vettore delle coordinate dei punti relativi
 
@@ -281,43 +268,54 @@ void MagliaTriangolare::AreaT(vector<double>& vettoreAree)
 
   }
 
+  return vettoreAree;
+
 }
 
 ///
 ///
 ///
 
-vector<unsigned int> MagliaTriangolare::EstraiTriDaRaffinare(const unsigned int& teta)
+vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare()
 {
-    vector<double> vettoreAree;
-    AreaT(vettoreAree); //Costruzione del vettore delle aree
+
+    vector<double> vettoreAree = OrdinaTriangoliPerArea(); //Costruzione del vettore delle aree
 
     vector<Decrescente> vettoreOrdAree = CreaVettoreDecrescente<double>(vettoreAree);
     vettoreOrdAree = HeapSort<Decrescente>(vettoreOrdAree);
 
-    /*
-      //Stampa delle aree nel vettore vettoreOrdAree
+    /*  //Stampa delle aree nel vettore vettoreOrdAree
     cout<<"Aree\n"<<"Disordinata\t\tOrdinata\n\n";
     for(unsigned int i=0; i<vettoreOrdAree.size(); i++)
     {
         cout<<"Indice: "<<i<<"\tArea: "<<vettoreAree[i]<<"\t";
         cout<<"Indice: "<<i<<"\tArea: "<<vettoreOrdAree[i].valore<<"\n";
-    }
-    */
+    }*/
 
-    vector<unsigned int> indiciDaRaff;
-    indiciDaRaff.reserve(teta);
+    unsigned int teta;
+
+      //Codice per ricevere in ingresso il valore di teta dall'utente una volta misurato il numero di triangoli
+//      cout<<"Totale: "<< vettoreOrdAree.size()<<" triangoli\n"
+//          <<"Inserire come numero intero il numero di triangoli da raffinare a partire da quelli con area maggiore: ";
+//      cin >> teta;
+
+    //Per qualche motivazione QtCreator non mi permette d'inserire un numero se non avvio il programma in modalità terminale
+    //(Barra a sinistra>«Projects»>«Run»> sotto «Build & Run»>seleziona «Run in terminal»); per ora lo faccio manulamente.
+
+    teta = 20;
+
+    vector<unsigned int> indiciDaRaffinare;
+    indiciDaRaffinare.reserve(teta);
 
     for(unsigned int i=0; i<teta; i++)
     {
         unsigned int j = 0;
-        while(vettoreOrdAree[i].valore != vettoreAree[j] || find(indiciDaRaff.begin(),indiciDaRaff.end(),j) != indiciDaRaff.end())
+        while(vettoreOrdAree[i].valore != vettoreAree[j] || find(indiciDaRaffinare.begin(),indiciDaRaffinare.end(),j) != indiciDaRaffinare.end())
             j++;
-        indiciDaRaff.push_back(j);
-        //cout<<j<<"\t";
+        indiciDaRaffinare.push_back(j);
     }
 
-    return indiciDaRaff;
+    return indiciDaRaffinare;
 }
 
 ///
@@ -438,17 +436,17 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
             magliaR.Triangoli.NumeroT++;
         }
 
-    /*
-    //Stampa delle coordinate dei punti originali e raffinati
+
+    /*//Stampa delle coordinate dei punti originali e raffinati
     cout<<"\tPunti originali\n";
     for(unsigned int i=0; i<Punti.NumeroP; i++)
-        cout<<Punti.CoordinateP[i][0]<<","<<Punti.CoordinateP[i][1]<<"\n";
+        cout<<"("<<Punti.CoordinateP[i][0]<<","<<Punti.CoordinateP[i][1]<<"(\n";
     cout<<"\n\tPunti raffinati\n";
     for(unsigned int i=0; i<magliaR.Punti.NumeroP; i++)
-        cout<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<"\n";
+        cout<<"("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n";*/
 
 
-    //Stampa delle coordinte di ciascun triangolo della maglia triangolare in un formato rappresentabile per geogebra
+    /*//Stampa delle coordinte di ciascun triangolo della maglia triangolare in un formato rappresentabile per geogebra
     cout<<"\tMaglia originali\n\n";
     for(unsigned int i=0; i<Triangoli.NumeroT; i++)
     {
@@ -464,11 +462,24 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
         for(unsigned int j=0; j<magliaR.Triangoli.VerticiT[i].size(); j++)
             cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][1]<<"),";
         cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][1]<<"))\n";
-    }
-    */
+    }*/
+
+
+    /*//Stampa per la visualizzazione su Geogebra
+    for(unsigned int i=Punti.NumeroP; i<magliaR.Punti.NumeroP; i++)
+        cout<<"A"<<i<<"=("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n"
+            <<"ImpColore(A"<<i<<",rosso)\n";
+    for(unsigned int i=0; i<magliaR.Triangoli.NumeroT; i++)
+    {
+        cout<<"Poligono(";
+        for(unsigned int j=0; j<magliaR.Triangoli.VerticiT[i].size(); j++)
+            cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][1]<<"),";
+        cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][1]<<"))\n";
+    }*/
 
     return magliaR;
 }
+
 
 ///
 ///
@@ -524,7 +535,7 @@ void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice 
 ///
 ///
 
-unsigned int MagliaTriangolare::TrovaTriangoloOpposto(unsigned int& indiceT, const array<unsigned int,2>& indiciLM)
+unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indiceT, const array<unsigned int,2>& indiciLM)
 {
     //L'indice del triangolo successivo è individuato (se esistente) dal seguente ciclo «for»
     unsigned int j;
@@ -532,7 +543,7 @@ unsigned int MagliaTriangolare::TrovaTriangoloOpposto(unsigned int& indiceT, con
     {
         if(find(Triangoli.VerticiT[j].begin(),Triangoli.VerticiT[j].end(),indiciLM[0]) != Triangoli.VerticiT[j].end() &&
            find(Triangoli.VerticiT[j].begin(),Triangoli.VerticiT[j].end(),indiciLM[1]) != Triangoli.VerticiT[j].end() &&
-           j != indiceT) //Le condizioni vno trovano (se esiste) un triangolo che ha contemporaneamente i medesimi punti del lato massimo ma diverso indice dal triangolo corrente
+           j != indiceT) //Le condizioni trovano (se esiste) un triangolo che ha contemporaneamente i medesimi punti del lato massimo ma diverso indice dal triangolo corrente
             break;
     }
     return j;
@@ -599,18 +610,19 @@ void MagliaTriangolare::CostruisciLati()
 ///
 ///
 
-void MagliaTriangolare::EsportaMaglia(const string& formato)
+bool MagliaTriangolare::EsportaMaglia(const string& nomeMaglia, const string& formato)
 {
+
     string nomeFilza;
     ofstream filza;
 
-    //Esportazione punti
 
-    nomeFilza = "./01 Punti."+formato;
+    //Esportazione punti
+    nomeFilza = "./"+nomeMaglia+" 01 Punti."+formato;
     filza.open(nomeFilza);
 
     if (filza.fail())
-        cerr<<"Errore durante la creazione delle filze in uscita."<<endl;
+        return false;
 
     filza<<"Id Marcatore X Y"<<endl;
 
@@ -624,11 +636,11 @@ void MagliaTriangolare::EsportaMaglia(const string& formato)
 
 
     //Esportazione lati
-    nomeFilza = "./02 Lati."+formato;
+    nomeFilza = "./"+nomeMaglia+" 02 Lati."+formato;
     filza.open(nomeFilza);
 
     if (filza.fail())
-        cerr<<"Errore durante la creazione delle filze in uscita."<<endl;
+        return false;
 
     filza<<"Id Marcatore Origine Fine"<<endl;
 
@@ -642,11 +654,11 @@ void MagliaTriangolare::EsportaMaglia(const string& formato)
 
 
     //Esportazione triangoli
-    nomeFilza = "./03 Triangoli."+formato;
+    nomeFilza = "./"+nomeMaglia+" 03 Triangoli."+formato;
     filza.open(nomeFilza);
 
     if (filza.fail())
-        cerr<<"Errore durante la creazione delle filze in uscita."<<endl;
+        return false;
 
     filza<<"Id Vertici Lati"<<endl;
 
@@ -660,6 +672,8 @@ void MagliaTriangolare::EsportaMaglia(const string& formato)
              <<Triangoli.LatiT[i][2]<<endl;
 
     filza.close();
+
+    return true;
 
 }
 
