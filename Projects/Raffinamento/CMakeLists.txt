@@ -55,7 +55,7 @@ list(APPEND raffinamento_test_INCLUDE ${raffinamento_test_includes})
 ################################################################################
 
 add_executable(raffinamento_test
-	main_test.cpp
+	main_teste.cpp
 	${raffinamento_test_HEADERS}
 	${raffinamento_test_INCLUDE}
 	${raffinamento_SOURCES}
@@ -69,7 +69,7 @@ target_compile_options(raffinamento_test PUBLIC -fPIC)
 gtest_discover_tests(raffinamento_test)
 
 add_executable(raffinamento_program
-	main_program.cpp
+	main_programma.cpp
 	${raffinamento_SOURCES}
     ${raffinamento_HEADERS})
 
