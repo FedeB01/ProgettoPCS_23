@@ -102,7 +102,7 @@ class MagliaTriangolare
 
         ///\brief Memorizza in un vettore le aree decrescenti dei triangoli, individuandone nel mentre il lato massimo e la punta
         ///\return Il vettore delle aree dei triangoli per valori decrescenti
-        vector<double> OrdinaTriangoliPerArea();
+        vector<double> CalcolaAreeTriangoli();
 
         ///
         ///

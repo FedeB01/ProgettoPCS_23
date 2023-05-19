@@ -2,6 +2,7 @@
 #define __TESTE_RAFFINAMENTO_H
 
 #include <gtest/gtest.h>
+#include <iostream>
 #include "classe_raffinamento.hpp"
 #include "ordinamento.hpp"
 
@@ -46,7 +47,6 @@ TEST(VerificaOrdinamento, VerificaHeapSortDecrescente)
     //Testi della prima maglia triangolare
 TEST(VerificaRaffinamento, VerificaPrimaImportazione)
 {
-
     MagliaTriangolare maglia;
 
     bool statoImportazione = maglia.ImportaMaglia("../Raffinamento/Dataset/Test1/Cell0Ds.csv",
@@ -84,7 +84,6 @@ TEST(VerificaRaffinamento, VerificaPrimaImportazione)
 
 TEST(VerificaRaffinamento, VerificaPrimaMagliaRaffinata)
 {
-
     MagliaTriangolare maglia, magliaRaffinata;
 
     bool statoImportazione = maglia.ImportaMaglia("../Raffinamento/Dataset/Test1/Cell0Ds.csv",
@@ -139,7 +138,7 @@ TEST(VerificaRaffinamento, VerificaPrimaEsportazione)
 
     magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
     magliaRaffinata.CostruisciLati();
-    bool statoEsportazione = magliaRaffinata.EsportaMaglia("#Teste Prima Maglia","csv");
+    bool statoEsportazione = magliaRaffinata.EsportaMaglia("Test1/Teste Prima Maglia","csv");
 
     ASSERT_TRUE(statoEsportazione); //Controllo che l'esportazione è avvenuta con successo
 }
@@ -148,7 +147,6 @@ TEST(VerificaRaffinamento, VerificaPrimaEsportazione)
     //Testi della seconda maglia triangolare
 TEST(VerificaRaffinamento, VerificaSecondaImportazione)
 {
-
     MagliaTriangolare maglia;
 
     bool statoImportazione = maglia.ImportaMaglia("../Raffinamento/Dataset/Test2/Cell0Ds.csv",
@@ -185,7 +183,6 @@ TEST(VerificaRaffinamento, VerificaSecondaImportazione)
 
 TEST(VerificaRaffinamento, VerificaSecondaMagliaRaffinata)
 {
-
     MagliaTriangolare maglia, magliaRaffinata;
 
     bool statoImportazione = maglia.ImportaMaglia("../Raffinamento/Dataset/Test2/Cell0Ds.csv",
@@ -239,7 +236,7 @@ TEST(VerificaRaffinamento, VerificaSecondaEsportazione)
 
     magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
     magliaRaffinata.CostruisciLati();
-    bool statoEsportazione = magliaRaffinata.EsportaMaglia("#Teste Seconda Maglia","csv");
+    bool statoEsportazione = magliaRaffinata.EsportaMaglia("Test2/Teste Seconda Maglia","csv");
 
     ASSERT_TRUE(statoEsportazione); //Controllo che l'esportazione è avvenuta con successo
 }

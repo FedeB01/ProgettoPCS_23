@@ -55,7 +55,7 @@ list(APPEND raffinamento_test_INCLUDE ${raffinamento_test_includes})
 ################################################################################
 
 add_executable(raffinamento_test
-	main_teste.cpp
+	main_T.cpp
 	${raffinamento_test_HEADERS}
 	${raffinamento_test_INCLUDE}
 	${raffinamento_SOURCES}
@@ -69,10 +69,14 @@ target_compile_options(raffinamento_test PUBLIC -fPIC)
 gtest_discover_tests(raffinamento_test)
 
 add_executable(raffinamento_program
-	main_programma.cpp
+	main_P.cpp
 	${raffinamento_SOURCES}
     ${raffinamento_HEADERS})
 
 target_link_libraries(raffinamento_program ${raffinamento_LINKED_LIBRARIES})
 target_include_directories(raffinamento_program PRIVATE ${raffinamento_INCLUDE})
 target_compile_options(raffinamento_program PUBLIC -fPIC)
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Maglia\ Raffinata)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Maglia\ Raffinata/Test1)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Maglia\ Raffinata/Test2)

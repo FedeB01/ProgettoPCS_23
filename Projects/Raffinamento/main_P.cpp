@@ -22,7 +22,7 @@ int main()
 
   primaMagliaRaffinata = primaMaglia.Dissezionatore(triangoliDaRaffinare); //Si raffina la maglia
   primaMagliaRaffinata.CostruisciLati(); //Si costruiscono i lati dai dati raffinati completando la maglia
-  statoEsportazione = primaMagliaRaffinata.EsportaMaglia("#Prima Maglia","csv"); //Si esporta la maglia in tra nuove filza
+  statoEsportazione = primaMagliaRaffinata.EsportaMaglia("Test1/Prima Maglia","csv"); //Si esporta la maglia in tra nuove filza
 
   if(!statoEsportazione) //Si verifica che l'esportazione è avvenuta con successo
       return 1;
@@ -42,7 +42,7 @@ int main()
 
   secondaMagliaRaffinata = secondaMaglia.Dissezionatore(triangoliDaRaffinare);
   secondaMagliaRaffinata.CostruisciLati();
-  statoEsportazione = secondaMagliaRaffinata.EsportaMaglia("#Seconda Maglia","csv");
+  statoEsportazione = secondaMagliaRaffinata.EsportaMaglia("Test2/Seconda Maglia","csv");
 
   if(!statoEsportazione)
       return 1;

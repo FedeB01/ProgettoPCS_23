@@ -20,7 +20,7 @@ namespace LibreriaOrdinamento {
 
 
   ///\brief Crea un vettore formato di strutture «Decrescente» coi medesimi valori memorizzati nel vettore in ingresso
-  ///\param vettore: vettore di riferimento che si vuole specchiare
+  ///\param vettore: il vettore di riferimento che si vuole specchiare
   ///\return il vettore di elementi «Decrescente»
   template<typename T> vector<Decrescente> CreaVettoreDecrescente(const vector<T>& vettore)
   {
@@ -68,7 +68,10 @@ namespace LibreriaOrdinamento {
   }
 
 
-  //Modello per definire l'algoritmo di ordinamento per un generito tipo di numero «T»
+
+  ///\brief Ordina un vettore di elementi di tipo «T» per valori crescenti tramite l'algoritmo «HeapSort»
+  ///\param v: il vettore da ordinare
+  ///\return il vettore ordinato crescentemente
   template<typename T> vector<T> HeapSort(const vector<T>& v){
 
     unsigned int i = 0;
