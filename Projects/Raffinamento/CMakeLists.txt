@@ -31,10 +31,10 @@ list(APPEND raffinamento_LINKED_LIBRARIES PRIVATE Threads::Threads)
 ## GTest
 find_package(GTest REQUIRED)
 
-list(APPEND raffinamento_test_LINKED_LIBRARIES PRIVATE GTest::gtest)
-list(APPEND raffinamento_test_LINKED_LIBRARIES PRIVATE GTest::gtest_main)
-list(APPEND raffinamento_test_LINKED_LIBRARIES PRIVATE GTest::gmock)
-list(APPEND raffinamento_test_LINKED_LIBRARIES PRIVATE GTest::gmock_main)
+list(APPEND teste_raffinamento_LINKED_LIBRARIES PRIVATE GTest::gtest)
+list(APPEND teste_raffinamento_LINKED_LIBRARIES PRIVATE GTest::gtest_main)
+list(APPEND teste_raffinamento_LINKED_LIBRARIES PRIVATE GTest::gmock)
+list(APPEND teste_raffinamento_LINKED_LIBRARIES PRIVATE GTest::gmock_main)
 
 # Insert Sources
 ################################################################################
@@ -48,34 +48,34 @@ list(APPEND raffinamento_INCLUDE ${raffinamento_includes})
 ################################################################################
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 
-list(APPEND raffinamento_test_HEADERS ${raffinamento_test_headers})
-list(APPEND raffinamento_test_INCLUDE ${raffinamento_test_includes})
+list(APPEND teste_raffinamento_HEADERS ${teste_raffinamento_headers})
+list(APPEND teste_raffinamento_INCLUDE ${teste_raffinamento_includes})
 
 # Create executable
 ################################################################################
 
-add_executable(raffinamento_test
+add_executable(teste_raffinamento
 	main_T.cpp
-	${raffinamento_test_HEADERS}
-	${raffinamento_test_INCLUDE}
+	${teste_raffinamento_HEADERS}
+	${teste_raffinamento_INCLUDE}
 	${raffinamento_SOURCES}
     ${raffinamento_HEADERS})
 
-target_link_libraries(raffinamento_test ${raffinamento_LINKED_LIBRARIES})
-target_link_libraries(raffinamento_test ${raffinamento_test_LINKED_LIBRARIES})
-target_include_directories(raffinamento_test PRIVATE ${raffinamento_INCLUDE} ${raffinamento_test_INCLUDE})
-target_compile_options(raffinamento_test PUBLIC -fPIC)
+target_link_libraries(teste_raffinamento ${raffinamento_LINKED_LIBRARIES})
+target_link_libraries(teste_raffinamento ${teste_raffinamento_LINKED_LIBRARIES})
+target_include_directories(teste_raffinamento PRIVATE ${raffinamento_INCLUDE} ${teste_raffinamento_INCLUDE})
+target_compile_options(teste_raffinamento PUBLIC -fPIC)
 
-gtest_discover_tests(raffinamento_test)
+gtest_discover_tests(teste_raffinamento)
 
-add_executable(raffinamento_program
+add_executable(programma_raffinamento
 	main_P.cpp
 	${raffinamento_SOURCES}
     ${raffinamento_HEADERS})
 
-target_link_libraries(raffinamento_program ${raffinamento_LINKED_LIBRARIES})
-target_include_directories(raffinamento_program PRIVATE ${raffinamento_INCLUDE})
-target_compile_options(raffinamento_program PUBLIC -fPIC)
+target_link_libraries(programma_raffinamento ${raffinamento_LINKED_LIBRARIES})
+target_include_directories(programma_raffinamento PRIVATE ${raffinamento_INCLUDE})
+target_compile_options(programma_raffinamento PUBLIC -fPIC)
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Maglia\ Raffinata)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Maglia\ Raffinata/Test1)

@@ -1,3 +1,4 @@
+
 #include "classe_raffinamento.hpp"
 #include "ordinamento.hpp"
 
@@ -37,7 +38,10 @@ bool MagliaTriangolare::ImportaPunti(const string& percorso)
   filza.open(percorso);
 
   if(filza.fail()) //Verifica che l'apertura della filza sia avvenuta con successo
+  {
+    cerr << "Errore nell'apertura della filza «Cell0D»" << endl;
     return false;
+  }
 
   list<string> listaLinee;
   string linea;
@@ -87,7 +91,10 @@ bool MagliaTriangolare::ImportaLati(const string& percorso)
   filza.open(percorso);
 
   if(filza.fail()) //Verifica che l'apertura della filza sia avvenuta con successo
+  {
+    cerr << "Errore nell'apertura della filza «Cell1D»" << endl;
     return false;
+  }
 
   list<string> listaLinee;
   string linea;
@@ -137,7 +144,10 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
   filza.open(percorso);
 
   if(filza.fail()) //Verifica che l'apertura della filza sia avvenuta con successo
+  {
+    cerr << "Errore nell'apertura della filza «Cell2D»" << endl;
     return false;
+  }
 
   list<string> listaLinee;
   string linea;
@@ -213,7 +223,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
           puntiRelativi.col(j) = Punti.CoordinateP[vertici[(j==2)?0:j+1]]-Punti.CoordinateP[vertici[j]];
           lunghezze(j) = puntiRelativi.col(j).norm(); //Calcolo della lunghezze dei lati lati relativi
           if(lunghezze[j]==0) //Controllo che nessuna distanza sia nulla, ovvero che due punti non coincidano
-              cerr<<"Errore: due punti del triangolo coincidono."<<endl;
+              cerr<<"Errore: due punti del triangolo coincidono"<<endl;
       }
 
       /*
@@ -279,7 +289,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
 ///
 ///
 
-vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare()
+vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare(const unsigned int& teta)
 {
 
     vector<double> vettoreAree = CalcolaAreeTriangoli(); //Costruzione del vettore delle aree
@@ -288,20 +298,8 @@ vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare()
     //Si sceglie l'algoritmo di HeapSort perché è uno dei migliori avendo nel caso peggiore una complessità temporale di O(n*log(n)) (in base «e»)
     vettoreOrdAree = HeapSort<Decrescente>(vettoreOrdAree);
 
-    unsigned int teta;
-
-    /*  //Codice per ricevere in ingresso il valore di teta dall'utente una volta misurato il numero di triangoli
-      cout<<"Totale: "<< vettoreOrdAree.size()<<" triangoli\n"
-          <<"Inserire come numero intero il numero di triangoli da raffinare a partire da quelli con area maggiore: ";
-      cin >> teta;*/
-
-    //Per qualche motivazione QtCreator non mi permette d'inserire un numero se non avvio il programma in modalità terminale
-    //(Barra a sinistra>«Projects»>«Run»> sotto «Build & Run»>seleziona «Run in terminal»); dunque per ora lo faccio manualmente.
-
-    teta = 20;
-
     vector<unsigned int> indiciDaRaffinare;
-    indiciDaRaffinare.reserve(teta);
+    //indiciDaRaffinare.reserve(teta); //Riservare memoria crascia il programma quando teta è uguale a 40
 
     for(unsigned int i=0; i<teta; i++) //Estrazione dei primi «teta» indici dei triangoli con area maggiore secondo il vettore «vettoreOrdAree»
     {
@@ -451,7 +449,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                 }
 
             }
-            while(v);
+            while(v == 1);
 
         }
     }
@@ -608,12 +606,12 @@ void MagliaTriangolare::CostruisciLati()
         {
             //Si memorizzano, invertendoli, gl'indici del lato per controllare (vedi ragionamento sopra) che sia già presente
             lato = {triangolo[(j==2? 0 :j+1)], triangolo[j]};
-            unsigned int k = 0;
+            unsigned int k;
 
             //Questo ciclo «for» individua (se esiste) il lato precedentemente costruito all'interno dei lati già memorizzati in «Lati.VerticiL»;
             //se «k=Lati.VerticiL.size()» allora il lato non è stato memorizzato all'interno della «magliaR»
             for(k=0; k<Lati.VerticiL.size(); k++)
-                if(lato==Lati.VerticiL[k])
+                if(lato == Lati.VerticiL[k])
                     break;
 
             //Si potrebbe usare if(find(Lati.VerticiL.begin(),Lati.VerticiL.end(),lato) == Lati.VerticiL.end())
@@ -629,15 +627,20 @@ void MagliaTriangolare::CostruisciLati()
                 //I seguenti «if» successivi vengono impiegati per individuare il marcatore del lato
                 if(Punti.MarcatoriP[lato[0]] == 0 || Punti.MarcatoriP[lato[1]] == 0)
                     Lati.MarcatoriL.push_back(0);
-                else if(Punti.MarcatoriP[lato[0]] != Punti.MarcatoriP[lato[1]])
-                    Lati.MarcatoriL.push_back(0);
-                else if(Punti.MarcatoriP[lato[0]] != 1 &&
-                        Punti.MarcatoriP[lato[0]] != 2 &&
-                        Punti.MarcatoriP[lato[0]] != 3 &&
-                        Punti.MarcatoriP[lato[0]] != 4)
+                else if(Punti.MarcatoriP[lato[0]] == Punti.MarcatoriP[lato[1]])
+                    Lati.MarcatoriL.push_back(Punti.MarcatoriP[lato[0]]);
+                else if(Punti.MarcatoriP[lato[0]] == 1 ||
+                        Punti.MarcatoriP[lato[0]] == 2 ||
+                        Punti.MarcatoriP[lato[0]] == 3 ||
+                        Punti.MarcatoriP[lato[0]] == 4)
+                    Lati.MarcatoriL.push_back(Punti.MarcatoriP[lato[1]]);
+                else if(Punti.MarcatoriP[lato[1]] == 1 ||
+                        Punti.MarcatoriP[lato[1]] == 2 ||
+                        Punti.MarcatoriP[lato[1]] == 3 ||
+                        Punti.MarcatoriP[lato[1]] == 4)
                     Lati.MarcatoriL.push_back(Punti.MarcatoriP[lato[0]]);
                 else
-                    Lati.MarcatoriL.push_back(Punti.MarcatoriP[lato[1]]);
+                    Lati.MarcatoriL.push_back(0);
             }
             else
             {

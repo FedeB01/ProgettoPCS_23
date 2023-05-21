@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "test_raffinamento.hpp"
+#include "teste_raffinamento.hpp"
 
 int main(int argc, char *argv[])
 {

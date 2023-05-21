@@ -1,6 +1,11 @@
 #ifndef __TESTE_RAFFINAMENTO_H
 #define __TESTE_RAFFINAMENTO_H
 
+
+//Variabili globali per il numero di triangoli da raffinare
+unsigned int teta1 = 20; //Triangoli da raffinare nella prima maglia triangolare
+unsigned int teta2 = 20; //Triangoli da raffinare nella prima maglia triangolare
+
 #include <gtest/gtest.h>
 #include <iostream>
 #include "classe_raffinamento.hpp"
@@ -92,7 +97,7 @@ TEST(VerificaRaffinamento, VerificaPrimaMagliaRaffinata)
 
     ASSERT_TRUE(statoImportazione); //Controllo che l'importazione è avvenuta con successo
 
-    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare();
+    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare(teta1);
 
     magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
     magliaRaffinata.CostruisciLati();
@@ -134,7 +139,8 @@ TEST(VerificaRaffinamento, VerificaPrimaEsportazione)
 
     ASSERT_TRUE(statoImportazione); //Controllo che l'importazione è avvenuta con successo
 
-    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare();
+    unsigned int teta = 20;
+    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare(teta);
 
     magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
     magliaRaffinata.CostruisciLati();
@@ -191,7 +197,7 @@ TEST(VerificaRaffinamento, VerificaSecondaMagliaRaffinata)
 
     ASSERT_TRUE(statoImportazione); //Controllo che l'importazione è avvenuta con successo
 
-    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare();
+    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare(teta2);
 
     magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
     magliaRaffinata.CostruisciLati();
@@ -232,7 +238,8 @@ TEST(VerificaRaffinamento, VerificaSecondaEsportazione)
 
     ASSERT_TRUE(statoImportazione); //Controllo che l'importazione è avvenuta con successo
 
-    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare();
+    unsigned int teta = 20;
+    vector<unsigned int> triangoliDaRaffinare = maglia.EstraiTriangoliDaRaffinare(teta);
 
     magliaRaffinata = maglia.Dissezionatore(triangoliDaRaffinare);
     magliaRaffinata.CostruisciLati();
@@ -240,5 +247,6 @@ TEST(VerificaRaffinamento, VerificaSecondaEsportazione)
 
     ASSERT_TRUE(statoEsportazione); //Controllo che l'esportazione è avvenuta con successo
 }
+
 
 #endif // __TESTE_RAFFINAMENTO_H

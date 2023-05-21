@@ -2,7 +2,6 @@
 #define __ORDINAMENTO_H
 
 #include <list>
-#include <map>
 #include "Eigen/Eigen"
 
 using namespace std;
@@ -59,12 +58,12 @@ namespace LibreriaOrdinamento {
 
   inline bool operator<(const Decrescente &oggetto1, const Decrescente &oggetto2)
   {
-    return oggetto1.valore > oggetto2.valore;
+    return (oggetto1.valore > oggetto2.valore);
   }
 
   inline bool operator>(const Decrescente &oggetto1, const Decrescente &oggetto2)
   {
-    return oggetto1.valore < oggetto2.valore;
+    return (oggetto1.valore < oggetto2.valore);
   }
 
 

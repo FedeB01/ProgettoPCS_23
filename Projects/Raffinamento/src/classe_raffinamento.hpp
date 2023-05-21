@@ -109,8 +109,9 @@ class MagliaTriangolare
         ///
 
         ///\brief Estrae gl'indici dei triangoli da raffinare secondo un numero dato dall'utente
+        ///\param teste: numero di triangoli da raffinare
         ///\return Il vettore degli indici dei triangoli da raffinare
-        vector<unsigned int> EstraiTriangoliDaRaffinare();
+        vector<unsigned int> EstraiTriangoliDaRaffinare(const unsigned int& teta);
 
         ///
         ///

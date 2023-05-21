@@ -1,3 +1,8 @@
+
+//Variabili globali per il numero di triangoli da raffinare
+unsigned int teta1 = 20; //Triangoli da raffinare nella prima maglia triangolare
+unsigned int teta2 = 20; //Triangoli da raffinare nella prima maglia triangolare
+
 #include "classe_raffinamento.hpp"
 
 using namespace LibreriaRaffinamento;
@@ -18,7 +23,7 @@ int main()
   if(!statoImportazione) //Si verifica che l'importazione è avvenuta con successo
       return 1;
 
-  triangoliDaRaffinare = primaMaglia.EstraiTriangoliDaRaffinare(); //Si estraggono i triangoli da raffinare
+  triangoliDaRaffinare = primaMaglia.EstraiTriangoliDaRaffinare(teta1); //Si estraggono i triangoli da raffinare
 
   primaMagliaRaffinata = primaMaglia.Dissezionatore(triangoliDaRaffinare); //Si raffina la maglia
   primaMagliaRaffinata.CostruisciLati(); //Si costruiscono i lati dai dati raffinati completando la maglia
@@ -38,7 +43,7 @@ int main()
   if(!statoImportazione)
       return 1;
 
-  triangoliDaRaffinare = secondaMaglia.EstraiTriangoliDaRaffinare();
+  triangoliDaRaffinare = secondaMaglia.EstraiTriangoliDaRaffinare(teta2);
 
   secondaMagliaRaffinata = secondaMaglia.Dissezionatore(triangoliDaRaffinare);
   secondaMagliaRaffinata.CostruisciLati();
