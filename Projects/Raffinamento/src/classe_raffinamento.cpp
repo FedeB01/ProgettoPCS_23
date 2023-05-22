@@ -493,7 +493,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
     /*//Stampa per la visualizzazione su Geogebra
     for(unsigned int i=Punti.NumeroP; i<magliaR.Punti.NumeroP; i++)
         cout<<"A"<<i<<"=("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n"
-            <<"ImpColore(A"<<i<<",rosso)\n";
+            <<"ImpColore(A"<<i<<",Magenta)\n";
     for(unsigned int i=0; i<magliaR.Triangoli.NumeroT; i++)
     {
         cout<<"Poligono(";
@@ -650,6 +650,25 @@ void MagliaTriangolare::CostruisciLati()
             }
         }
     }
+
+    /*//Stampa per la visualizzazione dei marcatori dei lati su Geogebra
+    for(unsigned int i=0; i<Lati.NumeroL; i++)
+    {
+        cout<<"B"<<i<<"=Segmento(("<<Punti.CoordinateP[Lati.VerticiL[i][0]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][0]][1]<<"),"
+            <<"("<<Punti.CoordinateP[Lati.VerticiL[i][1]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][1]][1]<<"))\n";
+        if(Lati.MarcatoriL[i] == 0)
+            cout<<"ImpColore(B"<<i<<",Blu)\n";
+        else if(Lati.MarcatoriL[i] == 8)
+            cout<<"ImpColore(B"<<i<<",Giallo)\n";
+        else if(Lati.MarcatoriL[i] == 7)
+            cout<<"ImpColore(B"<<i<<",Arancione)\n";
+        else if(Lati.MarcatoriL[i] == 6)
+            cout<<"ImpColore(B"<<i<<",Verde)\n";
+        else
+            cout<<"ImpColore(B"<<i<<",Rosso)\n";
+    }
+    cout<<"\n\n";*/
+
 }
 
 ///
