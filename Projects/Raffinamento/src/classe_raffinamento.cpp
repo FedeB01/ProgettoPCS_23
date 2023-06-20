@@ -115,7 +115,7 @@ bool MagliaTriangolare::ImportaLati(const string& percorso)
 
   Lati.VerticiL.reserve(Lati.NumeroL);
 
-  for (const string& linea : listaLinee) //Separazione delle informazioni contenunte in ogni linea estratta nei vari membri della struttura «Punto»
+  for (const string& linea : listaLinee) //Separazione delle informazioni contenunte in ogni linea estratta nei vari membri della struttura «Lati»
   {
     istringstream convertitore(linea);
 
@@ -169,7 +169,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
   Triangoli.VerticiT.reserve(Triangoli.NumeroT);
   Triangoli.LatiT.reserve(Triangoli.NumeroT);
 
-  for (const string& linea : listaLinee) //Separazione delle informazioni contenunte in ogni linea estratta nei vari membri della struttura «Punto»
+  for (const string& linea : listaLinee) //Separazione delle informazioni contenunte in ogni linea estratta nei vari membri della struttura «Triangoli»
   {
     istringstream converter(linea);
 
@@ -244,13 +244,13 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
       */
 
       //Si estrae la distanza massima perché la classica formula «(base*altezza)/2» può essere calcolata solo con un altezza perperdicolare alla base e, considerando il lato maggiore,
-      //tale caratteristica è sempre garantita (basta disegnare dei triangoli con un lato molto piccolo e gli altri lunghi per vedere il problema che perà faccia fatica ad esprimere)
+      //tale caratteristica è sempre garantita (basta disegnare dei triangoli con un lato molto piccolo e gli altri lunghi per vedere il problema che però faccio fatica ad esprimere)
       base = lunghezze.maxCoeff();
 
       //Tale struttura condizionale permette di identificare i due punti di massima distanza confrontando il vettore delle lunghezze e la base ricavata con il metodo «.maxCoeff()».
-      if(base == lunghezze[0]) //Il
+      if(base == lunghezze[0])
       {
-          lato = lunghezze[2]; //Lunghezza massima
+          lato = lunghezze[2]; //Lato precedente al lato massimo/base (arbitrariamente potrebbe essere scelto il successivo alla base)
           prodScalare = (puntiRelativi.col(0)).dot(-puntiRelativi.col(2)); //Prodotto scalare tra il vettore relativo massimo e un [arbitrario] vettore relativo di fianco
           Triangoli.LatiTMax.push_back({vertici[0], vertici[1]}); //Indici dei punti del lato massimo
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][0]]); //Marcatore associato al massimo lato
@@ -299,7 +299,6 @@ vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare(const unsigne
     vettoreOrdAree = HeapSort<Decrescente>(vettoreOrdAree);
 
     vector<unsigned int> indiciDaRaffinare;
-    //indiciDaRaffinare.reserve(teta); //Riservare memoria crascia il programma quando teta è uguale a 40
 
     for(unsigned int i=0; i<teta; i++) //Estrazione dei primi «teta» indici dei triangoli con area maggiore secondo il vettore «vettoreOrdAree»
     {
@@ -352,7 +351,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                         (Punti.CoordinateP[indiciPunti[0]][1]+Punti.CoordinateP[indiciPunti[1]][1])/2;
             magliaR.Punti.CoordinateP.push_back(puntoMedio); //Si aggiunge al vettore dei punti della «magliR»
             magliaR.Punti.MarcatoriP.push_back(Triangoli.MarcatoriLatiTMax[iTCorrente]); //Si assegna lo stesso marcatore del relativo lato e infine
-            magliaR.Punti.NumeroP++; //Si aumenta il numero di triangoli nella «magliR»
+            magliaR.Punti.NumeroP++; //Si aumenta il numero di punti nella «magliaR»
 
             //Inserimento dei sottotriangoli nella struttura «Triangoli» della «magliaR» (si creano solo due sottotriangoli
             //e non tre [come nella funzione «SmembraTriangolo»] perché il triangolo iniziale non presenta un punto medio precedente)
@@ -392,7 +391,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                     while(magliaR.Triangoli.VerticiT[k][h] == indiciPunti[0] || magliaR.Triangoli.VerticiT[k][h] == indiciPunti[1])
                         h++;
 
-                    //I comandi successivi sono simili a quelli inziali (righe 364,365) ma si scambiano indiciPunti[0] e indiciPunti[0]; ciò accade
+                    //I comandi successivi sono simili a quelli inziali (righe 358, 359) ma si scambiano indiciPunti[0] e indiciPunti[0]; ciò accade
                     //perché nel triangolo successivo, per mantenere il senso antiorario, bisogna invertire il senso del lato massimo precedente.
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indiciPunti[0], magliaR.Triangoli.VerticiT[k][h]});
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, magliaR.Triangoli.VerticiT[k][h], indiciPunti[1]});
@@ -407,13 +406,13 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
                 {
                     //Si controlla che il lato massimo precedente coincida con il successivo (si faccia attenzione che mantendendo,
                     //il senso antiorario, si ha un'inversione degl'indici, ragion per cui si controlla il primo del nuovo con
-                    //il secondo del vecchio e viceversa; è molto simile a ciò che accade nel commento di riga 400,401)
+                    //il secondo del vecchio e viceversa; è molto simile a ciò che accade nel commento di riga 396, 397
 
                     //Aggiornamento degli indici del lato massimo e della punta
                     indiciPunti = Triangoli.LatiTMax[iTCorrente];
                     indicePunta = Triangoli.Punte[iTCorrente];
 
-                    //I comandi successivi sono simili a quelli inziali (righe 364,365)
+                    //I comandi successivi sono simili a quelli inziali (righe 358, 359)
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indiciPunti[1], indicePunta});
                     magliaR.Triangoli.VerticiT.push_back({magliaR.Punti.NumeroP-1, indicePunta, indiciPunti[0]});
 
@@ -587,7 +586,7 @@ unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indice
 void MagliaTriangolare::CostruisciLati()
 {
 
-    Lati.VerticiL.reserve(3*Triangoli.NumeroT); //Stima massima dei lati perché molti di  non vi saranno mai
+    Lati.VerticiL.reserve(3*Triangoli.NumeroT); //Stima massima dei lati perché molti di questi non vi saranno mai
     Triangoli.LatiT.resize(Triangoli.NumeroT);
 
     array<unsigned int,2> lato;
@@ -596,7 +595,6 @@ void MagliaTriangolare::CostruisciLati()
     //Un lato sarà condiviso da un solo altro triangolo rispetto a quello considerato e se per uno è in senso antiorario per l'altro è in senso orario;
     //in altre parole il lato (n_1,n_2) orientato in senso antiorario in un triangolo è nell'altro orientato in senso orario e quindi in quest'ultimo
     //è salvato come (n_2,n_1) per mantenere il senso antiorario. Pertanto è sufficiente controllare che l'inverso di un lato sia presente nel vettore dei lati.
-    //Questa stessa logica è stata anche usata nelle righe precedente di questo programma (400,401 e 410,411).
 
     for(unsigned int i=0; i<Triangoli.NumeroT; i++) //Per ogni triangolo
     {

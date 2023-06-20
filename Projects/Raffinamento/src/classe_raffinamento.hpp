@@ -50,7 +50,7 @@ vector<unsigned int> Punte= {}; //Vettore degl'indici del punto opposto al lato 
 class MagliaTriangolare
 {
 
-    //Le informazioni sono private perché solo le funzioni legate all'oggetto
+    //Le informazioni sono private perché sono le funzioni legate all'oggetto
     //«MagliaTriangolare» devono essere in grado di modificarle e/o accedervi
     private:
 
@@ -100,15 +100,15 @@ class MagliaTriangolare
         ///
         ///
 
-        ///\brief Memorizza in un vettore le aree decrescenti dei triangoli, individuandone nel mentre il lato massimo e la punta
-        ///\return Il vettore delle aree dei triangoli per valori decrescenti
+        ///\brief Memorizza in un vettore le aree dei triangoli, individuandone nel mentre il lato massimo e la punta
+        ///\return Il vettore delle aree dei triangoli
         vector<double> CalcolaAreeTriangoli();
 
         ///
         ///
         ///
 
-        ///\brief Estrae gl'indici dei triangoli da raffinare secondo un numero dato dall'utente
+        ///\brief Estrae gl'indici dei primi teta triangoli da raffinare con area maggiore
         ///\param teste: numero di triangoli da raffinare
         ///\return Il vettore degli indici dei triangoli da raffinare
         vector<unsigned int> EstraiTriangoliDaRaffinare(const unsigned int& teta);
@@ -119,7 +119,7 @@ class MagliaTriangolare
 
         ///\brief Raffina la maglia triangolare tramite l'algoritmo «bisezione del lato più lungo» in forma complessa
         ///\param indici: vettore degli indici dei triangoli da raffinare
-        ///\return Un oggetto «agliaTriangolare» contenente i punti e i triangoli (senza lati) della maglia trinagolare raffinata
+        ///\return Un oggetto «MagliaTriangolare» contenente i punti e i triangoli (senza lati) della maglia triangolare raffinata
         MagliaTriangolare Dissezionatore(const vector<unsigned int>& indici);
 
         ///

@@ -72,7 +72,7 @@ TEST(VerificaRaffinamento, VerificaPrimaImportazione)
 
       for(unsigned int e = 0; e < 3; e++) //Si controlla che i dati importati siano coerenti fra di loro
       {
-          //Si memorizzano il primo e il seocndo indice dei punti del lato in corrispondenza dell'indice «lati[e]»
+          //Si memorizzano il primo e il seocndo((...)) indice dei punti del lato in corrispondenza dell'indice «lati[e]»
           const unsigned int inzioLato = latiMaglia.VerticiL[lati[e]][0];
           const unsigned int fineLato = latiMaglia.VerticiL[lati[e]][1];
 

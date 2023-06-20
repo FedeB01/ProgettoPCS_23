@@ -77,13 +77,13 @@ namespace LibreriaOrdinamento {
     vector<T> mucchioBin = v;
     T bicerino; //Variabile per memorizzare temporaneamente l'elemento da scambiare (il nome è l'adattamento del piemontese «bicerin» che letteralmente significa «bicchierino»)
 
-
-    //Questo ciclo «while» costruire da una lista il mucchio binario (traduzione dell'inglese «heap binary»),
+    //DA MODIFICARE!:'(
+    //Questo ciclo «while» costruisce da una lista il mucchio binario (traduzione dell'inglese «heap binary»),
     //ovvero di un albero binario in cui un qualsiasi nodo ha l'etichetta associata maggiore di quelle dei suoi [eventuali] nodi figli
 
-    //L'idea di fondo il ciclo si basa su un controllo continuo del vettore, interpreta come un albero binario, e in particolare dei nodi parenti con i nodi figli.
+    //L'idea di fondo il ciclo si basa su un controllo continuo del vettore, interpretato come un albero binario, e in particolare dei nodi parenti con i nodi figli.
     //Infatti il «while» continua finché l'indice è minore della dimensione, indice che viene aumentato solo se non avvengono scambi; di conseguenza
-    //il ciclo termina quando tutti i parenti hanno un etichetta maggiore di tuti i figli,proprio come definito da un mucchio binario
+    //il ciclo termina quando tutti i parenti hanno un etichetta maggiore di tutti i figli, proprio come definito da un mucchio binario
 
     while(i<v.size()){
         //A ogni iterazione l'indice i viene rinizializzato a zero per contare da capo i nodi non scambiati
@@ -121,7 +121,7 @@ namespace LibreriaOrdinamento {
     //in modo tale che l'albero binario rimanente, escluso l'ultimo nodo, soddisfi le caratteristiche di un mucchio binario descritte nel precedente ciclo; l'algoritmo viene ripetuto questa
     //volta considerando il primo e il penultimo elemento e cosí via finché si finiscono nodi del mucchio binario originale.
 
-    for(unsigned int k=0; k<mucchioBin.size(); k++){
+    for(unsigned int k=0; k<mucchioBin.size(); k++){   //k rappresenta il numero di nodi ordinati e quindi da escludere; in totale il ciclo verrà ripetuto n volte coincidente col numero di nodi da ordinare
 
       //Questa parte scambia il primo con il (n-k-1)-esimo elemento con «n» coincidente con la dimensione del vettore in ingresso «v».
       bicerino=mucchioBin[mucchioBin.size()-k-1];
@@ -130,17 +130,20 @@ namespace LibreriaOrdinamento {
 
       i=0;
 
+      //La condizione «i!=v.size()» non significa che si scandiscono tutti i nodi dell'albero, ma è semplicemente un numero arbitrario per uscire dal ciclo
+      //(infatti lo si impone uguale a i quando non vi sono più scambi favorevoli nell'«else»); la scelta di «i!=v.size()» è arbitraria e deriva dal fatto che i
+      //non sarà mai uguale a tal numero all'interno del while se non per l'«else»
       while(i!=v.size()){
 
         //Controlla che l'eticchetta dell'i-esimo nodo sia minore del suo primo figlio in corrispondenza dell'(2*i+1)-esimo nodo
         //Inoltre si controlla pure che il primo figlio esista effettivamente verificando la condizione «(2*i+1)<(n-k-1)», in cui n-k-1 esclude il nodo scambiato all'inizio.
         if(mucchioBin[i]<mucchioBin[2*i+1] && (2*i+1)<(v.size()-k-1))
           {
-            //Se la prima condizione è verificata (ovvero l'etichetta dell'i-esimo nodo è minore di quella del suo primo figlio)
+            //Se la prima condizione è verificata (ovvero l'etichetta dell'i-esimo nodo parente è minore di quella del suo primo figlio)
             //allora si controlla anche quella del secondo figlio, verificandone pure l'esistenza sempre escludendo il nodo scambiato all'inizio.
             if(mucchioBin[i]<mucchioBin[2*i+2] && (2*i+2)<(v.size()-k-1))
             {
-                //Se pure il secondo figlio è minore del parente allora si sceglie il figlio con l'etichetta maggiore e lo si scambia con il parente.
+                //Se l'i-esimo nodo parente è pure minore del secondo figlio allora si sceglie il figlio con l'etichetta maggiore e lo si scambia con il parente.
                 if(mucchioBin[2*i+1]>mucchioBin[2*i+2])
                 {
                      bicerino = mucchioBin[2*i+1];
