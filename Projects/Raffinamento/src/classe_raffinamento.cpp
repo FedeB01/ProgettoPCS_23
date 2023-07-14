@@ -199,6 +199,16 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
 {
 
+    //
+    //
+    //
+    //
+    /// Da modificare per implementare il calcolo dell'area col prodotto vettoriale che evita il calcolo dell'angolo
+    //
+    //
+    //
+    //
+
   //Visto che implicitamento si suppone che l'orientamento del triangolo sia antiorario (ovvero dal primo punto fino al terzo ci si muove in tal senso)
   //Le coordinate salvate in latoMax preserveranno anche tale orientamento presupponendo il vettore orientato dal primo al secondo punto
 
