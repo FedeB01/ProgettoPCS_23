@@ -1,7 +1,7 @@
 
 //Variabili globali per il numero di triangoli da raffinare
-unsigned int teta1 = 70; //Triangoli da raffinare nella prima maglia triangolare
-unsigned int teta2 = 40; //Triangoli da raffinare nella prima maglia triangolare
+unsigned int teta1 = 100; //Triangoli da raffinare nella prima maglia triangolare
+unsigned int teta2 = 70; //Triangoli da raffinare nella prima maglia triangolare
 
 #include "classe_raffinamento.hpp"
 

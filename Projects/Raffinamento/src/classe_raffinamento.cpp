@@ -219,7 +219,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
   MatrixXd puntiRelativi(2,3); //Vettore delle coordinate dei punti relativi
 
   array<unsigned int, 3> vertici; //Vettore dei tre indici che formano il triangolo
-  double lato, base, altezza, area, angolo, prodScalare;
+  double base, area;
 
   for(unsigned int i=0; i<Triangoli.NumeroT; i++)
   {
@@ -260,35 +260,38 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
       //Tale struttura condizionale permette di identificare i due punti di massima distanza confrontando il vettore delle lunghezze e la base ricavata con il metodo «.maxCoeff()».
       if(base == lunghezze[0])
       {
-          lato = lunghezze[2]; //Lato precedente al lato massimo/base (arbitrariamente potrebbe essere scelto il successivo alla base)
-          prodScalare = (puntiRelativi.col(0)).dot(-puntiRelativi.col(2)); //Prodotto scalare tra il vettore relativo massimo e un [arbitrario] vettore relativo di fianco
+          //Si calcola l'area tramite il modulo del prodotto vettoriale tra il vettore piú lungo e quello successivo (cosí da garantirne la positività);
+          //inoltre in questo caso il prodotto vettoriale si riduce alla sola terza componente poiché i vettori giacciono su un piano orizzontale
+          area = 0.5*(puntiRelativi.col(0)[0]*puntiRelativi.col(1)[1]-puntiRelativi.col(1)[0]*puntiRelativi.col(0)[1]);
+          vettoreAree.push_back(area);
+
           Triangoli.LatiTMax.push_back({vertici[0], vertici[1]}); //Indici dei punti del lato massimo
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][0]]); //Marcatore associato al massimo lato
           Triangoli.Punte.push_back(vertici[2]); //Punto opposto al lato massimo
       }
       else if(base == lunghezze[1])
       {
-          lato = lunghezze[0];//Come nel primo caso
-          prodScalare = (puntiRelativi.col(1)).dot(-puntiRelativi.col(0));
+          //Come nel primo caso ma riadattato nel caso il secondo lato sia quello piú lungo
+
+          area = 0.5*(puntiRelativi.col(1)[0]*puntiRelativi.col(2)[1]-puntiRelativi.col(2)[0]*puntiRelativi.col(1)[1]);
+          vettoreAree.push_back(area);
+
           Triangoli.LatiTMax.push_back({vertici[1], vertici[2]});
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][1]]);
           Triangoli.Punte.push_back(vertici[0]);
       }
       else
       {
-          lato = lunghezze[1];//Come nel primo caso
-          prodScalare = (puntiRelativi.col(2)).dot(-puntiRelativi.col(1));
+          //Come nel primo caso ma riadattato nel caso il terzo lato sia quello piú lungo
+
+          area = 0.5*(puntiRelativi.col(2)[0]*puntiRelativi.col(0)[1]-puntiRelativi.col(0)[0]*puntiRelativi.col(2)[1]);
+          vettoreAree.push_back(area);
+
           Triangoli.LatiTMax.push_back({vertici[2], vertici[0]});
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][2]]);
           Triangoli.Punte.push_back(vertici[1]);
       }
 
-      //La variabile «lato» e «prodScalare» sono utilizzate per ricavare l'angolo che intercorre fra i due vettori necessario per l'altezza
-      angolo = acos(prodScalare/(lato*base)); //Calcolo dell'angolo tramite l'arcocoseno del prodotto scalare normalizzato dalla formula v₁·v₂=‖v₁‖₂‖v₂‖₂cos(θ)
-      altezza = lato*sin(angolo); //Calcolo dell'altezza tramite l'angolo interposto tra la base e il lato che in questo caso coincide con l'ipotenusa
-
-      area = (base*altezza)/2;
-      vettoreAree.push_back(area);
   }
 
   return vettoreAree;
@@ -471,45 +474,10 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
         }
 
 
-    /*//Stampa delle coordinate dei punti originali e raffinati
-    cout<<"\tPunti originali\n";
-    for(unsigned int i=0; i<Punti.NumeroP; i++)
-        cout<<"("<<Punti.CoordinateP[i][0]<<","<<Punti.CoordinateP[i][1]<<"(\n";
-    cout<<"\n\tPunti raffinati\n";
-    for(unsigned int i=0; i<magliaR.Punti.NumeroP; i++)
-        cout<<"("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n";*/
-
-
-    /*//Stampa delle coordinte di ciascun triangolo della maglia triangolare in un formato rappresentabile per geogebra
-    cout<<"\tMaglia originali\n\n";
-    for(unsigned int i=0; i<Triangoli.NumeroT; i++)
-    {
-        cout<<"Poligono(";
-        for(unsigned int j=0; j<Triangoli.VerticiT[i].size(); j++)
-            cout<<"("<<Punti.CoordinateP[Triangoli.VerticiT[i][j]][0]<<","<<Punti.CoordinateP[Triangoli.VerticiT[i][j]][1]<<"),";
-        cout<<"("<<Punti.CoordinateP[Triangoli.VerticiT[i][0]][0]<<","<<Punti.CoordinateP[Triangoli.VerticiT[i][0]][1]<<"))\n";
-    }
-    cout<<"\n\n\n\tMaglia raffinata\n\n";
-    for(unsigned int i=0; i<magliaR.Triangoli.NumeroT; i++)
-    {
-        cout<<"Poligono(";
-        for(unsigned int j=0; j<magliaR.Triangoli.VerticiT[i].size(); j++)
-            cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][1]<<"),";
-        cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][1]<<"))\n";
-    }*/
-
-
-    /*//Stampa per la visualizzazione su Geogebra
+    /*//Stampa per la visualizzazione dei punti raffinati su Geogebra
     for(unsigned int i=Punti.NumeroP; i<magliaR.Punti.NumeroP; i++)
         cout<<"A"<<i<<"=("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n"
-            <<"ImpColore(A"<<i<<",Magenta)\n";
-    for(unsigned int i=0; i<magliaR.Triangoli.NumeroT; i++)
-    {
-        cout<<"Poligono(";
-        for(unsigned int j=0; j<magliaR.Triangoli.VerticiT[i].size(); j++)
-            cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][j]][1]<<"),";
-        cout<<"("<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][0]<<","<<magliaR.Punti.CoordinateP[magliaR.Triangoli.VerticiT[i][0]][1]<<"))\n";
-    }*/
+            <<"ImpColore(A"<<i<<",Red)\n";*/
 
 
     return magliaR;
@@ -658,6 +626,15 @@ void MagliaTriangolare::CostruisciLati()
             }
         }
     }
+
+
+    /*//Stampa per la visualizzazione dei lati dei triangoli su Geogebra
+    for(unsigned int i=0; i<Lati.NumeroL; i++)
+        cout<<"B"<<i<<"=Segmento(("<<Punti.CoordinateP[Lati.VerticiL[i][0]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][0]][1]<<"),"
+            <<"("<<Punti.CoordinateP[Lati.VerticiL[i][1]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][1]][1]<<"))\n"
+            <<"ImpColore(B"<<i<<",Blue)\n";
+    cout<<"\n\n";*/
+
 
     /*//Stampa per la visualizzazione dei marcatori dei lati su Geogebra
     for(unsigned int i=0; i<Lati.NumeroL; i++)
