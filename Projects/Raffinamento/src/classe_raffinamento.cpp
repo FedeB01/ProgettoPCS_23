@@ -467,10 +467,10 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
         }
 
 
-    //Stampa per la visualizzazione dei punti raffinati su Geogebra
+    /*//Stampa per la visualizzazione dei punti raffinati su Geogebra
     for(unsigned int i=Punti.NumeroP; i<magliaR.Punti.NumeroP; i++)
         cout<<"A"<<i<<"=("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n"
-            <<"ImpColore(A"<<i<<",Red)\n";
+            <<"ImpColore(A"<<i<<",Red)\n";*/
 
 
     return magliaR;
@@ -621,12 +621,12 @@ void MagliaTriangolare::CostruisciLati()
     }
 
 
-    //Stampa per la visualizzazione dei lati dei triangoli su Geogebra
+    /*//Stampa per la visualizzazione dei lati dei triangoli su Geogebra
     for(unsigned int i=0; i<Lati.NumeroL; i++)
         cout<<"B"<<i<<"=Segmento(("<<Punti.CoordinateP[Lati.VerticiL[i][0]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][0]][1]<<"),"
             <<"("<<Punti.CoordinateP[Lati.VerticiL[i][1]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][1]][1]<<"))\n"
             <<"ImpColore(B"<<i<<",Blue)\n";
-    cout<<"\n\n";
+    cout<<"\n\n";*/
 
 
     /*//Stampa per la visualizzazione dei marcatori dei lati su Geogebra

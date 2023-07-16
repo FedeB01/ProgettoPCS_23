@@ -88,6 +88,44 @@ namespace LibreriaOrdinamento {
     for(unsigned int i=1; i<v.size(); i++) //Si parte scandendo il secondo elemento della lista perché il primo nodo del mucchio binario non deve essere confrontato con nessun nodo
     {
 
+        //L'indice «f» rappresenta il nodo del figlio «corrente», ovvero di quello che si muove dinamicamente tra i genitori;
+        //in tal modo si lascia intoccato «i» che indica l'indice dell'iniziale nodo di partenza
+        f = i;
+        bicerino = mucchioBin[f]; //Si memorizza l'iniziale valore del nodo figlio da confrontare coi successivi genitori
+
+        do
+        {
+            //Controllo che l'indice del nodo da controllare sia pari (resto nullo rispetto a 2) o dispari (resto unitario rispetto a 2)
+            //poiché ciò condiziona la scelta dell'indice del nodo genitore da considerare nel futuro controllo
+            g = f % 2 == 0 ? (f-2)/2 : (f-1)/2 ;
+
+            //Controllo che il genitore abbia un'etichetta minore dell'iniziale nodo figlio da confrontare
+            if(mucchioBin[g]<bicerino)
+            {
+                //In caso positivo si memorizza nel nodo figlio corrente il valore del genitore confrontato
+                mucchioBin[f] = mucchioBin[g];
+                f = g; //L'indice del figlio corrente diventa quello del genitore appena confrontato
+            }
+            else break; //Altrimenti si esce dal ciclo «while»
+
+        }
+        //Il ciclo «while» cessa quando il nodo genitore (già controllato) ha indice 0, ovvero è in cima al mucchio binario,
+        //perché in tal caso non vi sono piú genitori da controllare
+        while(g!=0);
+
+        //Se l'indice del nodo figlio corrente differisce da quello dell'iniziale nodo confrontato, allora v'è stato
+        //almeno uno scambio per cui bisogna memorizzare in cima alla catena degli scambi il valore del nodo iniziale
+        if(f!=i) mucchioBin[f]=bicerino;
+
+    }
+
+/*
+      //Precedente versione meno efficiente perché effettuava piú operazioni di scambio di quanto fosse necessario,
+      //aumentando il costo computazionale per alti valori di «n», in particolare all'interno della struttura «if»
+
+    for(unsigned int i=1; i<v.size(); i++) //Si parte scandendo il secondo elemento della lista perché il primo nodo del mucchio binario non deve essere confrontato con nessun nodo
+    {
+
         f = i; //Variabile ausiliaria per poter muoversi dinamicamente con il nodo ogni volta che viene scambiato lasciando intoccato l'indice «i»
 
         do
@@ -114,8 +152,7 @@ namespace LibreriaOrdinamento {
 
 
     }
-
-
+*/
 
     //Questo ciclo «for» invece riordina la lista scambiando inizialmente il primo elemento con l'ultimo, successivamente riposizione il nuovo primo elemento
     //(coincidente con l'ultimo di prima) in modo tale che l'albero binario rimanente, escluso l'ultimo nodo, soddisfi le caratteristiche di un mucchio binario
