@@ -3,8 +3,8 @@
 
 
 //Variabili globali per il numero di triangoli da raffinare
-unsigned int teta1 = 20; //Triangoli da raffinare nella prima maglia triangolare
-unsigned int teta2 = 20; //Triangoli da raffinare nella prima maglia triangolare
+unsigned int teta1 = 144; //Triangoli da raffinare nella prima maglia triangolare (con un massimo di 144)
+unsigned int teta2 = 186; //Triangoli da raffinare nella prima maglia triangolare (con un massimo di 186)
 
 #include <gtest/gtest.h>
 #include <iostream>

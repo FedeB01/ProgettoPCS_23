@@ -196,7 +196,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 ///
 ///
 
-vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
+vector<Decrescente> MagliaTriangolare::CalcolaAreeTriangoli()
 {
 
   //Visto che implicitamento si suppone che l'orientamento del triangolo sia antiorario (ovvero dal primo punto fino al terzo ci si muove in tal senso)
@@ -204,7 +204,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
 
   Triangoli.LatiTMax.reserve(Triangoli.NumeroT); //Il numero di lati massimi coincide con il numero di triangoli perché ciascuno di essi ha un lato massimo [eventualmente ripetuto]
 
-  vector<double> vettoreAree;
+  vector<Decrescente> vettoreAree;
   vettoreAree.reserve(Triangoli.NumeroT);
 
   Vector3d lunghezze; //Vettore delle distanze tra i tre punti considerati
@@ -255,7 +255,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
           //Si calcola l'area tramite il modulo del prodotto vettoriale tra il vettore piú lungo e quello successivo (cosí da garantirne la positività);
           //inoltre in questo caso il prodotto vettoriale si riduce alla sola terza componente poiché i vettori giacciono su un piano orizzontale
           area = 0.5*(puntiRelativi.col(0)[0]*puntiRelativi.col(1)[1]-puntiRelativi.col(1)[0]*puntiRelativi.col(0)[1]);
-          vettoreAree.push_back(area);
+          vettoreAree.push_back(Decrescente(area,i));
 
           Triangoli.LatiTMax.push_back({vertici[0], vertici[1]}); //Indici dei punti del lato massimo
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][0]]); //Marcatore associato al massimo lato
@@ -266,7 +266,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
           //Come nel primo caso ma riadattato nel caso il secondo lato sia quello piú lungo
 
           area = 0.5*(puntiRelativi.col(1)[0]*puntiRelativi.col(2)[1]-puntiRelativi.col(2)[0]*puntiRelativi.col(1)[1]);
-          vettoreAree.push_back(area);
+          vettoreAree.push_back(Decrescente(area,i));
 
           Triangoli.LatiTMax.push_back({vertici[1], vertici[2]});
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][1]]);
@@ -277,7 +277,7 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
           //Come nel primo caso ma riadattato nel caso il terzo lato sia quello piú lungo
 
           area = 0.5*(puntiRelativi.col(2)[0]*puntiRelativi.col(0)[1]-puntiRelativi.col(0)[0]*puntiRelativi.col(2)[1]);
-          vettoreAree.push_back(area);
+          vettoreAree.push_back(Decrescente(area,i));
 
           Triangoli.LatiTMax.push_back({vertici[2], vertici[0]});
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][2]]);
@@ -297,14 +297,20 @@ vector<double> MagliaTriangolare::CalcolaAreeTriangoli()
 vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare(const unsigned int& teta)
 {
 
-    vector<double> vettoreAree = CalcolaAreeTriangoli(); //Costruzione del vettore delle aree
-    vector<Decrescente> vettoreOrdAree = CreaVettoreDecrescente<double>(vettoreAree);
+    vector<Decrescente> vettoreAree = CalcolaAreeTriangoli(); //Costruzione del vettore delle aree
 
     //Si sceglie l'algoritmo di HeapSort perché è uno dei migliori avendo nel caso peggiore una complessità temporale di O(n*log(n)) (in base «e»)
-    vettoreOrdAree = HeapSort<Decrescente>(vettoreOrdAree);
+    vector<Decrescente> areeOrdinate = HeapSort<Decrescente>(vettoreAree);
 
     vector<unsigned int> indiciDaRaffinare;
     indiciDaRaffinare.reserve(teta);
+
+    for(unsigned int i=0; i<teta; i++) //Estrazione dei primi «teta» indici dei triangoli con area maggiore secondo il vettore «areeOrdinate»
+        indiciDaRaffinare.push_back(areeOrdinate[i].indice);
+
+    /*
+
+      //Precedente [inefficiente] versione per la ricerca per la ricerca degl'indici dei triangoli secondo il valore di un'area
 
     for(unsigned int i=0; i<teta; i++) //Estrazione dei primi «teta» indici dei triangoli con area maggiore secondo il vettore «vettoreOrdAree»
     {
@@ -316,7 +322,7 @@ vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare(const unsigne
         while(vettoreOrdAree[i].valore != vettoreAree[j] || find(indiciDaRaffinare.begin(),indiciDaRaffinare.end(),j) != indiciDaRaffinare.end())
             j++;
         indiciDaRaffinare.push_back(j);
-    }
+    }*/
 
     return indiciDaRaffinare;
 }
@@ -467,10 +473,10 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
         }
 
 
-    ///Stampa per la visualizzazione dei punti raffinati su Geogebra
+    /*///Stampa per la visualizzazione dei punti raffinati su Geogebra
     for(unsigned int i=Punti.NumeroP; i<magliaR.Punti.NumeroP; i++)
         cout<<"A"<<i<<"=("<<magliaR.Punti.CoordinateP[i][0]<<","<<magliaR.Punti.CoordinateP[i][1]<<")\n"
-            <<"ImpColore(A"<<i<<",Red)\n";
+            <<"ImpColore(A"<<i<<",Red)\n";*/
 
 
     return magliaR;
@@ -621,12 +627,12 @@ void MagliaTriangolare::CostruisciLati()
     }
 
 
-    ///Stampa per la visualizzazione dei lati dei triangoli su Geogebra
+    /*///Stampa per la visualizzazione dei lati dei triangoli su Geogebra
     for(unsigned int i=0; i<Lati.NumeroL; i++)
         cout<<"B"<<i<<"=Segmento(("<<Punti.CoordinateP[Lati.VerticiL[i][0]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][0]][1]<<"),"
             <<"("<<Punti.CoordinateP[Lati.VerticiL[i][1]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][1]][1]<<"))\n"
             <<"ImpColore(B"<<i<<",Blue)\n";
-    cout<<"\n\n";
+    cout<<"\n\n";*/
 
 
     /*///Stampa per la visualizzazione dei marcatori dei lati su Geogebra

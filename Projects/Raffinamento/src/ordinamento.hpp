@@ -13,27 +13,11 @@ namespace LibreriaOrdinamento {
   struct Decrescente
   {
     double valore;
+    unsigned int indice;
     Decrescente() = default;
-    Decrescente(const double& valore): valore(valore){}
+    Decrescente(const double& valore): valore(valore){} //Costruttore col solo valore
+    Decrescente(const double& valore, const unsigned int& indice): valore(valore), indice(indice){} //Costruttore col valore e l'indice
   };
-
-
-  ///\brief Crea un vettore formato di strutture «Decrescente» coi medesimi valori memorizzati nel vettore in ingresso
-  ///\param vettore: il vettore di riferimento che si vuole specchiare
-  ///\return il vettore di elementi «Decrescente»
-  template<typename T> vector<Decrescente> CreaVettoreDecrescente(const vector<T>& vettore)
-  {
-      vector<Decrescente> vettoreD;
-      vettoreD.reserve(vettore.size());
-
-      for(unsigned int i=0; i<vettore.size(); i++)
-      {
-          Decrescente elemento(vettore[i]);
-          vettoreD.push_back(elemento);
-      }
-
-      return vettoreD;
-  }
 
 
   //Riformulazione dell'operazione di flusso «<<» per l'oggetto «Decrescente» ma che in pratica nel programma non viene

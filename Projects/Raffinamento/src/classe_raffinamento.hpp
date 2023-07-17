@@ -5,11 +5,14 @@
 #include <fstream>
 #include <cmath>
 
-
 #include "Eigen/Eigen"
+#include "ordinamento.hpp"
+
 
 using namespace std;
 using namespace Eigen;
+using namespace LibreriaOrdinamento;
+
 
 namespace LibreriaRaffinamento
 {
@@ -102,7 +105,7 @@ class MagliaTriangolare
 
         ///\brief Memorizza in un vettore le aree dei triangoli, individuandone nel mentre il lato massimo e la punta
         ///\return Il vettore delle aree dei triangoli
-        vector<double> CalcolaAreeTriangoli();
+        vector<Decrescente> CalcolaAreeTriangoli();
 
         ///
         ///
