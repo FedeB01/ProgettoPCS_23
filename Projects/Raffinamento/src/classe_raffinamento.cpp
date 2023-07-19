@@ -168,6 +168,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 
   Triangoli.VerticiT.reserve(Triangoli.NumeroT);
   Triangoli.LatiT.reserve(Triangoli.NumeroT);
+  Triangoli.ListaLaTri.reserve(Triangoli.NumeroT);
 
   for (const string& linea : listaLinee) //Separazione delle informazioni contenunte in ogni linea estratta nei vari membri della struttura «Triangoli»
   {
@@ -182,12 +183,17 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
     for(unsigned int i = 0; i < 3; i++)
       converter >> vertici[i];
     for(unsigned int i = 0; i < 3; i++)
+    {
       converter >> lati[i];
+      Triangoli.ListaLaTri.push_back(Decrescente(lati[i],id));
+    }
 
     Triangoli.VerticiT.push_back(vertici);
     Triangoli.LatiT.push_back(lati);
 
   }
+
+  Triangoli.ListaLaTri = HeapSort<Decrescente>(Triangoli.ListaLaTri);
 
   return true;
 }
@@ -229,7 +235,7 @@ vector<Decrescente> MagliaTriangolare::CalcolaAreeTriangoli()
       }
 
       /*
-        //Precedente versione del piú agile e immediato ciclo «for» per la costruzione degli oggetti «puntiRelativi» e «lunghezze»
+        //Precedente [piú inefficiente] versione del piú agile e immediato ciclo «for» per la costruzione degli oggetti «puntiRelativi» e «lunghezze»
 
       puntiRelativi.col(0) = Punti.CoordinateP[vertici[1]]-Punti.CoordinateP[vertici[0]]; //Coordinate del secondo punto relativo al primo
       puntiRelativi.col(1) = Punti.CoordinateP[vertici[2]]-Punti.CoordinateP[vertici[1]]; //Coordinate del terzo punto relativo al secondo
@@ -257,7 +263,7 @@ vector<Decrescente> MagliaTriangolare::CalcolaAreeTriangoli()
           area = 0.5*(puntiRelativi.col(0)[0]*puntiRelativi.col(1)[1]-puntiRelativi.col(1)[0]*puntiRelativi.col(0)[1]);
           vettoreAree.push_back(Decrescente(area,i));
 
-          Triangoli.LatiTMax.push_back({vertici[0], vertici[1]}); //Indici dei punti del lato massimo
+          Triangoli.LatiTMax.push_back({vertici[0], vertici[1], Triangoli.LatiT[i][0]}); //Indici dei punti del lato massimo
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][0]]); //Marcatore associato al massimo lato
           Triangoli.Punte.push_back(vertici[2]); //Punto opposto al lato massimo
       }
@@ -268,7 +274,7 @@ vector<Decrescente> MagliaTriangolare::CalcolaAreeTriangoli()
           area = 0.5*(puntiRelativi.col(1)[0]*puntiRelativi.col(2)[1]-puntiRelativi.col(2)[0]*puntiRelativi.col(1)[1]);
           vettoreAree.push_back(Decrescente(area,i));
 
-          Triangoli.LatiTMax.push_back({vertici[1], vertici[2]});
+          Triangoli.LatiTMax.push_back({vertici[1], vertici[2], Triangoli.LatiT[i][1]});
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][1]]);
           Triangoli.Punte.push_back(vertici[0]);
       }
@@ -279,7 +285,7 @@ vector<Decrescente> MagliaTriangolare::CalcolaAreeTriangoli()
           area = 0.5*(puntiRelativi.col(2)[0]*puntiRelativi.col(0)[1]-puntiRelativi.col(0)[0]*puntiRelativi.col(2)[1]);
           vettoreAree.push_back(Decrescente(area,i));
 
-          Triangoli.LatiTMax.push_back({vertici[2], vertici[0]});
+          Triangoli.LatiTMax.push_back({vertici[2], vertici[0], Triangoli.LatiT[i][2]});
           Triangoli.MarcatoriLatiTMax.push_back(Lati.MarcatoriL[Triangoli.LatiT[i][2]]);
           Triangoli.Punte.push_back(vertici[1]);
       }
@@ -310,7 +316,7 @@ vector<unsigned int> MagliaTriangolare::EstraiTriangoliDaRaffinare(const unsigne
 
     /*
 
-      //Precedente [inefficiente] versione per la ricerca per la ricerca degl'indici dei triangoli secondo il valore di un'area
+      //Precedente [piú inefficiente] versione per la ricerca per la ricerca degl'indici dei triangoli secondo il valore di un'area
 
     for(unsigned int i=0; i<teta; i++) //Estrazione dei primi «teta» indici dei triangoli con area maggiore secondo il vettore «vettoreOrdAree»
     {
@@ -344,7 +350,7 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
     //(si usa «VectorXi» anziché «vector<bool>» perché in tal modo si può inizializzare molto piú facilmente il vettore a 0)
     VectorXi statoTriangolo = VectorXi::Zero(Triangoli.NumeroT);
     Vector2d puntoMedio;
-    array<unsigned int, 2> indiciPunti;
+    array<unsigned int, 3> indiciPunti;
     unsigned int iTCorrente, indicePunta;
 
     bool v;
@@ -489,9 +495,9 @@ MagliaTriangolare MagliaTriangolare::Dissezionatore(const vector<unsigned int>& 
 ///
 
 void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice del Punto Medio
-                                         const array<unsigned int,2>& indiciLM, //indici del Lato Massimo
+                                         const array<unsigned int,3>& indiciLM, //indici del Lato Massimo
                                          const unsigned int& indicePNT, //indice della PuNTa
-                                         const array<unsigned int,2>& indiciLMP, //indici del Lato Massimo Precedente
+                                         const array<unsigned int,3>& indiciLMP, //indici del Lato Massimo Precedente
                                          const unsigned int& indicePMP) //indice del Punto Medio Precedente
 {
 
@@ -541,8 +547,26 @@ void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice 
 ///
 ///
 
-unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indiceT, const array<unsigned int,2>& indiciLM)
+unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indiceT, const array<unsigned int,3>& indiciLM)
 {
+
+    unsigned int indiceTO, indiceC;
+
+    Decrescente latoCondiviso = Decrescente(indiciLM[2]);
+    indiceC = MergeSort<Decrescente>(Triangoli.ListaLaTri, latoCondiviso);
+
+    if(Triangoli.ListaLaTri[indiceC].indice != indiceT)
+        indiceTO = Triangoli.ListaLaTri[indiceC].indice;
+    else if(Triangoli.ListaLaTri[indiceC-1].valore == indiciLM[2])
+        indiceTO = Triangoli.ListaLaTri[indiceC-1].indice;
+    else if(Triangoli.ListaLaTri[indiceC+1].valore == indiciLM[2])
+        indiceTO = Triangoli.ListaLaTri[indiceC+1].indice;
+    else
+        indiceTO = Triangoli.NumeroT;
+
+    /*
+        //Versione precedente [piú inefficiente] dell'algoritmo per trovare il triangolo opposto a un lato
+
     //L'indice del triangolo successivo è individuato (se esistente) dal seguente ciclo «for»
     unsigned int j;
     for(j=0; j<Triangoli.NumeroT; j++)
@@ -553,7 +577,10 @@ unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indice
             break;
     }
     //Se il valore di «j» è uguale a Triangoli.NumeroT allora il triangolo opposto non esiste e quello corrente deve trovarsi al bordo
-    return j;
+    */
+
+
+    return indiceTO;
 }
 
 ///

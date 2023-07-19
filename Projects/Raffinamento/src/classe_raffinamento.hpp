@@ -43,9 +43,10 @@ unsigned int NumeroT = 0; //Numero di triangoli descritti dalla filza «Cell2Ds�
 vector<array<unsigned int, 3>> VerticiT = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) dei triangoli
 vector<array<unsigned int, 3>> LatiT = {}; //Vettore degl'indici dei lati (rispetto alla filza «Cell1Ds» e ordinati in senso antiorario) dei triangoli
 
-vector<array<unsigned int, 2>> LatiTMax= {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) del lato massimo di ogni triangolo
-vector<unsigned int> MarcatoriLatiTMax= {}; //Vettore dei marcatori dei lati massimi (utile per sapere il marcatore del punto medio venturo) di ogni triangolo
-vector<unsigned int> Punte= {}; //Vettore degl'indici del punto opposto al lato massimo di ogni triangolo
+vector<Decrescente> ListaLaTri; //Lista di strutture «Decrescente» per memorizzare i lati con marcatore nullo e l'indice del relativo triangolo cui appartengono
+vector<array<unsigned int, 3>> LatiTMax = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) del lato massimo di ogni triangolo
+vector<unsigned int> MarcatoriLatiTMax = {}; //Vettore dei marcatori dei lati massimi (utile per sapere il marcatore del punto medio venturo) di ogni triangolo
+vector<unsigned int> Punte = {}; //Vettore degl'indici del punto opposto al lato massimo di ogni triangolo
 };
 
 
@@ -136,9 +137,9 @@ class MagliaTriangolare
         ///\param indiciLMP: indici del Lato Massimo Precedente
         ///\param indicePMP: indice del Punto Medio Precedente
         void SmembraTriangolo(const unsigned int& indicePM,
-                              const array<unsigned int,2>& indiciLM,
+                              const array<unsigned int,3>& indiciLM,
                               const unsigned int& indicePNT,
-                              const array<unsigned int,2>& indiciLMP,
+                              const array<unsigned int,3>& indiciLMP,
                               const unsigned int& indicePMP);
 
         ///
@@ -150,7 +151,7 @@ class MagliaTriangolare
         ///\param indiciLM: indici del lato massimo condivisi dal triangolo opposto
         ///\return l'indice del triangolo opposto da «0» a «numero triangoli-1»: se uguale al «numero triangoli» allora esso non esiste
         unsigned int TrovaTriangoloOpposto(const unsigned int& indiceT,
-                                           const array<unsigned int,2>& indiciLM);
+                                           const array<unsigned int,3>& indiciLM);
 
         ///
         ///

@@ -185,6 +185,35 @@ namespace LibreriaOrdinamento {
 
   }
 
+
+
+  ///\brief
+  ///\param
+  ///\return
+  template<typename T> unsigned int MergeSort(const vector<T>& v, T& chiave)
+  {
+
+      unsigned int sinistra = 0, destra = v.size()-1, centro;
+      unsigned int indice;
+
+      while (sinistra <= destra)
+      {
+          centro = floor((sinistra+destra)/2);
+
+          if (v[centro] > chiave)
+            destra = centro-1;
+          else if (v[centro] < chiave)
+            sinistra = centro+1;
+          else
+          {
+              indice = centro;
+              break;
+          }
+      }
+
+      return indice;
+  }
+
 }
 
 #endif // __ORDINAMENTO_H
