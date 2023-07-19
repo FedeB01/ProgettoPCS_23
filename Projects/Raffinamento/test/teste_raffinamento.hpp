@@ -8,6 +8,7 @@ unsigned int teta2 = 186; //Triangoli da raffinare nella prima maglia triangolar
 
 #include <gtest/gtest.h>
 #include <iostream>
+
 #include "classe_raffinamento.hpp"
 #include "ordinamento.hpp"
 
@@ -47,6 +48,20 @@ TEST(VerificaOrdinamento, VerificaHeapSortDecrescente)
 
   EXPECT_EQ(vettoreOrdinato, vettoreRif); //Confronto fra il vettore ordinato dal «HeapSort» e quello di riferimento
 }
+
+TEST(VerificaOrdinamento, VerificaMergeSort)
+{
+  vector<int> vettore = {2, 4, 5, 6, 7, 8, 9, 10, 12 ,13};
+
+  vector<unsigned int> vettoreRif = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, vettoreIndici;
+  vettoreIndici.reserve(vettore.size());
+
+  for(unsigned int i=0; i<vettore.size(); i++)
+      vettoreIndici.push_back(MergeSort<int>(vettore,vettore[i]));
+
+  EXPECT_EQ(vettoreIndici, vettoreRif); //Confronto fra il vettore costruito da «MergeSort» e quello di riferimento
+}
+
 
 
     //Testi della prima maglia triangolare
