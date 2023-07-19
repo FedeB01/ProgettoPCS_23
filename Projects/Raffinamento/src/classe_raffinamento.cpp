@@ -168,7 +168,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 
   Triangoli.VerticiT.reserve(Triangoli.NumeroT);
   Triangoli.LatiT.reserve(Triangoli.NumeroT);
-  Triangoli.ListaLaTri.reserve(Triangoli.NumeroT);
+  Triangoli.LatiTriangoli.reserve(Triangoli.NumeroT);
 
   for (const string& linea : listaLinee) //Separazione delle informazioni contenunte in ogni linea estratta nei vari membri della struttura «Triangoli»
   {
@@ -185,7 +185,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
     for(unsigned int i = 0; i < 3; i++)
     {
       converter >> lati[i];
-      Triangoli.ListaLaTri.push_back(Decrescente(lati[i],id));
+      Triangoli.LatiTriangoli.push_back(Decrescente(lati[i],id));
     }
 
     Triangoli.VerticiT.push_back(vertici);
@@ -193,7 +193,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 
   }
 
-  Triangoli.ListaLaTri = HeapSort<Decrescente>(Triangoli.ListaLaTri);
+  Triangoli.LatiTriangoli = HeapSort<Decrescente>(Triangoli.LatiTriangoli);
 
   return true;
 }
@@ -553,14 +553,14 @@ unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indice
     unsigned int indiceTO, indiceC;
 
     Decrescente latoCondiviso = Decrescente(indiciLM[2]);
-    indiceC = MergeSort<Decrescente>(Triangoli.ListaLaTri, latoCondiviso);
+    indiceC = MergeSort<Decrescente>(Triangoli.LatiTriangoli, latoCondiviso);
 
-    if(Triangoli.ListaLaTri[indiceC].indice != indiceT)
-        indiceTO = Triangoli.ListaLaTri[indiceC].indice;
-    else if(Triangoli.ListaLaTri[indiceC-1].valore == indiciLM[2])
-        indiceTO = Triangoli.ListaLaTri[indiceC-1].indice;
-    else if(Triangoli.ListaLaTri[indiceC+1].valore == indiciLM[2])
-        indiceTO = Triangoli.ListaLaTri[indiceC+1].indice;
+    if(Triangoli.LatiTriangoli[indiceC].indice != indiceT)
+        indiceTO = Triangoli.LatiTriangoli[indiceC].indice;
+    else if(Triangoli.LatiTriangoli[indiceC-1].valore == indiciLM[2])
+        indiceTO = Triangoli.LatiTriangoli[indiceC-1].indice;
+    else if(Triangoli.LatiTriangoli[indiceC+1].valore == indiciLM[2])
+        indiceTO = Triangoli.LatiTriangoli[indiceC+1].indice;
     else
         indiceTO = Triangoli.NumeroT;
 
