@@ -49,7 +49,9 @@ TEST(VerificaOrdinamento, VerificaHeapSortDecrescente)
   EXPECT_EQ(vettoreOrdinato, vettoreRif); //Confronto fra il vettore ordinato dal «HeapSort» e quello di riferimento
 }
 
-TEST(VerificaOrdinamento, VerificaMergeSort)
+
+    //Unico teste per controllare che gli elementi univoci in «vettore» vengono trovati correttamente dall'algoritmo «RicercaBinaria»
+TEST(VerificaOrdinamento, VerificaRicercaBinaria)
 {
   vector<int> vettore = {2, 4, 5, 6, 7, 8, 9, 10, 12 ,13};
 
@@ -57,7 +59,7 @@ TEST(VerificaOrdinamento, VerificaMergeSort)
   vettoreIndici.reserve(vettore.size());
 
   for(unsigned int i=0; i<vettore.size(); i++)
-      vettoreIndici.push_back(MergeSort<int>(vettore,vettore[i]));
+      vettoreIndici.push_back(RicercaBinaria<int>(vettore,vettore[i]));
 
   EXPECT_EQ(vettoreIndici, vettoreRif); //Confronto fra il vettore costruito da «MergeSort» e quello di riferimento
 }

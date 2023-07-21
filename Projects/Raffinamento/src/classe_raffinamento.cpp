@@ -185,7 +185,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
     for(unsigned int i = 0; i < 3; i++)
     {
       converter >> lati[i];
-      Triangoli.LatiTriangoli.push_back(Decrescente(lati[i],id));
+      Triangoli.LatiTriangoli.push_back(Decrescente(lati[i],id)); //Si aggiunge al vettore «LatiTriangoli» la struttura «Decrescente» coll'indice del lato e del triangolo rispettivamente
     }
 
     Triangoli.VerticiT.push_back(vertici);
@@ -193,7 +193,7 @@ bool MagliaTriangolare::ImportaTriangoli(const string& percorso)
 
   }
 
-  Triangoli.LatiTriangoli = HeapSort<Decrescente>(Triangoli.LatiTriangoli);
+  Triangoli.LatiTriangoli = HeapSort<Decrescente>(Triangoli.LatiTriangoli); //Si ordina secondo gl'indici dei lati il vettore-membro «LatiTriangoli»
 
   return true;
 }
@@ -550,19 +550,21 @@ void MagliaTriangolare::SmembraTriangolo(const unsigned int& indicePM, //indice 
 unsigned int MagliaTriangolare::TrovaTriangoloOpposto(const unsigned int& indiceT, const array<unsigned int,3>& indiciLM)
 {
 
-    unsigned int indiceTO, indiceC;
+    unsigned int indiceTO, indiceC; //Indice T[riangolo] O[pposto] e indice [di] C[ontrollo] rispettivamente
 
-    Decrescente latoCondiviso = Decrescente(indiciLM[2]);
-    indiceC = MergeSort<Decrescente>(Triangoli.LatiTriangoli, latoCondiviso);
+    Decrescente latoCondiviso = Decrescente(indiciLM[2]); //Si costruisce l'oggetto da ricercare in «LatiTriangoli»
+    indiceC = RicercaBinaria<Decrescente>(Triangoli.LatiTriangoli, latoCondiviso); //Si ricava l'indice di un'occorrenza di una struttura «Decrescente» avente «latoCodiviso» come valore
 
-    if(Triangoli.LatiTriangoli[indiceC].indice != indiceT)
+    //La seguente struttura condizionale si basa sulla semplice osservazione che in una maglia triangolare un lato è condiviso da al piú due triangoli
+    if(Triangoli.LatiTriangoli[indiceC].indice != indiceT)//Se l'oggetto trovato appartiene a un altro triangolo allora l'«indiceTO» deve essere uguale a quel valore
         indiceTO = Triangoli.LatiTriangoli[indiceC].indice;
-    else if(Triangoli.LatiTriangoli[indiceC-1].valore == indiciLM[2])
+    else if(Triangoli.LatiTriangoli[indiceC-1].valore == indiciLM[2])//Altrimenti se l'oggetto precedente ha il medesimo lato di quello ricercato allora quello precedente ha l'indice del triangolo opposto
         indiceTO = Triangoli.LatiTriangoli[indiceC-1].indice;
-    else if(Triangoli.LatiTriangoli[indiceC+1].valore == indiciLM[2])
+    else if(Triangoli.LatiTriangoli[indiceC+1].valore == indiciLM[2])//Altrimenti se l'oggetto successivo ha il medesimo lato di quello ricercato allora quello successivo ha l'indice del triangolo opposto
         indiceTO = Triangoli.LatiTriangoli[indiceC+1].indice;
-    else
+    else //Altrimenti se l'oggetto trovato è l'unico con quel lato allora non esiste il triangolo opposto
         indiceTO = Triangoli.NumeroT;
+
 
     /*
         //Versione precedente [piú inefficiente] dell'algoritmo per trovare il triangolo opposto a un lato
@@ -626,7 +628,7 @@ void MagliaTriangolare::CostruisciLati()
                 Lati.NumeroL++; //Si aumenta il numero di lati
                 Triangoli.LatiT[i][j] = Lati.NumeroL-1; //Si aggiunge l'indice considerato al membro «LatiT» della struttura «Triangoli»
 
-                //I seguenti «if» successivi vengono impiegati per individuare il marcatore del lato
+                //La seguente struttura condizionale viene impiegata per individuare il marcatore del lato
                 if(Punti.MarcatoriP[lato[0]] == 0 || Punti.MarcatoriP[lato[1]] == 0)
                     Lati.MarcatoriL.push_back(0);
                 else if(Punti.MarcatoriP[lato[0]] == Punti.MarcatoriP[lato[1]])
@@ -654,8 +656,8 @@ void MagliaTriangolare::CostruisciLati()
     }
 
 
-    /*///Stampa per la visualizzazione dei lati dei triangoli su Geogebra
-    for(unsigned int i=0; i<Lati.NumeroL; i++)
+    ///Stampa per la visualizzazione dei lati dei triangoli su Geogebra
+    /*for(unsigned int i=0; i<Lati.NumeroL; i++)
         cout<<"B"<<i<<"=Segmento(("<<Punti.CoordinateP[Lati.VerticiL[i][0]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][0]][1]<<"),"
             <<"("<<Punti.CoordinateP[Lati.VerticiL[i][1]][0]<<","<<Punti.CoordinateP[Lati.VerticiL[i][1]][1]<<"))\n"
             <<"ImpColore(B"<<i<<",Blue)\n";

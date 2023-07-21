@@ -23,30 +23,30 @@ namespace LibreriaRaffinamento
 
 struct Punti
 {
-unsigned int NumeroP = 0; //Numero di punti descritti dalla filza «Cell0Ds»
-vector<Vector2d> CoordinateP = {}; //Coordinate (x,y) di ogni punti (si sceglie «Vector2d» anziché «array<double, 2> per applicare piú facilmente la norma)
-vector<unsigned int> MarcatoriP = {}; //Marcatori di ogni punto
+    unsigned int NumeroP = 0; //Numero di punti descritti dalla filza «Cell0Ds»
+    vector<Vector2d> CoordinateP = {}; //Coordinate (x,y) di ogni punti (si sceglie «Vector2d» anziché «array<double, 2> per applicare piú facilmente la norma)
+    vector<unsigned int> MarcatoriP = {}; //Marcatori di ogni punto
 };
 
 
 struct Lati
 {
-unsigned int NumeroL = 0; //Numero di lati in «Cell1Ds»
-vector<array<unsigned int, 2>> VerticiL = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) del lato
-vector<unsigned int> MarcatoriL = {}; //Marcatori di ogni lato
+    unsigned int NumeroL = 0; //Numero di lati in «Cell1Ds»
+    vector<array<unsigned int, 2>> VerticiL = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) del lato
+    vector<unsigned int> MarcatoriL = {}; //Marcatori di ogni lato
 };
 
 
 struct Triangoli
 {
-unsigned int NumeroT = 0; //Numero di triangoli descritti dalla filza «Cell2Ds»
-vector<array<unsigned int, 3>> VerticiT = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) dei triangoli
-vector<array<unsigned int, 3>> LatiT = {}; //Vettore degl'indici dei lati (rispetto alla filza «Cell1Ds» e ordinati in senso antiorario) dei triangoli
+    unsigned int NumeroT = 0; //Numero di triangoli descritti dalla filza «Cell2Ds»
+    vector<array<unsigned int, 3>> VerticiT = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) dei triangoli
+    vector<array<unsigned int, 3>> LatiT = {}; //Vettore degl'indici dei lati (rispetto alla filza «Cell1Ds» e ordinati in senso antiorario) dei triangoli
 
-vector<Decrescente> LatiTriangoli; //Lista di strutture «Decrescente» per memorizzare i lati con marcatore nullo e l'indice del relativo triangolo cui appartengono
-vector<array<unsigned int, 3>> LatiTMax = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) del lato massimo di ogni triangolo
-vector<unsigned int> MarcatoriLatiTMax = {}; //Vettore dei marcatori dei lati massimi (utile per sapere il marcatore del punto medio venturo) di ogni triangolo
-vector<unsigned int> Punte = {}; //Vettore degl'indici del punto opposto al lato massimo di ogni triangolo
+    vector<Decrescente> LatiTriangoli; //Lista di strutture «Decrescente» per memorizzare gl'indici dei lati e dei relativi triangoli a cui appartengono
+    vector<array<unsigned int, 3>> LatiTMax = {}; //Vettore degl'indici dei punti (rispetto alla filza «Cell0Ds» e ordinati in senso antiorario) del lato massimo di ogni triangolo
+    vector<unsigned int> MarcatoriLatiTMax = {}; //Vettore dei marcatori dei lati massimi (utile per sapere il marcatore del punto medio venturo) di ogni triangolo
+    vector<unsigned int> Punte = {}; //Vettore degl'indici del punto opposto al lato massimo di ogni triangolo
 };
 
 

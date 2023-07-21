@@ -187,15 +187,20 @@ namespace LibreriaOrdinamento {
 
 
 
-  ///\brief
-  ///\param
-  ///\return
-  template<typename T> unsigned int MergeSort(const vector<T>& v, T& chiave)
+  ///\brief Restituisce l'indice dell'elemento [potenzialmente esistente] nel vettore «v» con valore «v[indice]» uguale a «chiave», altrimenti restituisce la dimensione di «v»
+  ///\param v: il vettore supposto crescente rispetto ai valori associati ai suoi elementi
+  ///\param chiave: il valore da ricercare nel vettore
+  ///\return l'indice dell'elemento che soddisfa l'equazione «v[indice]=chiave»
+  template<typename T> unsigned int RicercaBinaria(const vector<T>& v, T& chiave)
   {
 
       unsigned int sinistra = 0, destra = v.size()-1, centro;
-      unsigned int indice;
+      unsigned int indice = v.size(); //Restituisce la dimensione del vettore quando la chiave non è presente
 
+      //L'algoritmo si basa sull'ordinamento sottinteso del vettore «v»: si considera l'elemento a metà del vettore e da esso, confrontandolo colla chiave, si decide
+      //da che parte dimezzare il vettore, ovvero cambiando gl'indice «sinistra» e «destra»; tale logica è iterativamente ripetuta finché si trova un'occorrenza
+      //dell'elemento colla medesima chiave (infatti potrebbero esservi piú elementi con la medesima chiave) oppure l'indice «sinistra» diventa uguale a «destra»,
+      //ovvero non esiste un elemento con quella chiave e l'indice restituito è la dimensione del vettore inizialmente definito.
       while (sinistra <= destra)
       {
           centro = floor((sinistra+destra)/2);
