@@ -61,7 +61,7 @@ TEST(VerificaOrdinamento, VerificaRicercaBinaria)
   for(unsigned int i=0; i<vettore.size(); i++)
       vettoreIndici.push_back(RicercaBinaria<int>(vettore,vettore[i]));
 
-  EXPECT_EQ(vettoreIndici, vettoreRif); //Confronto fra il vettore costruito da «MergeSort» e quello di riferimento
+  EXPECT_EQ(vettoreIndici, vettoreRif); //Confronto fra il vettore costruito da «RicercaBinaria» e quello di riferimento
 }
 
 

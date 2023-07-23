@@ -65,9 +65,9 @@ class MagliaTriangolare
     public:
 
         ///\brief Importa la maglia triangolare e memorizza i dati nei membri privati «Punti», «Lati» e «Triangoli»
-        ///\param percorso0: stringa del percorso della filza «Cell0Ds» descrivente i punti della maglia trinagolare
-        ///\param percorso1: stringa del percorso della filza «Cell1Ds» descrivente i lati della maglia trinagolare
-        ///\param percorso2: stringa del percorso della filza «Cell2Ds» descrivente i triangoli della maglia trinagolare
+        ///\param percorso0: stringa del percorso della filza «Cell0Ds» descrivente i punti della maglia triangolare
+        ///\param percorso1: stringa del percorso della filza «Cell1Ds» descrivente i lati della maglia triangolare
+        ///\param percorso2: stringa del percorso della filza «Cell2Ds» descrivente i triangoli della maglia triangolare
         ///\return il risultato della lettura: vera (1) se è un successo, falso (0) altrimenti
         bool ImportaMaglia(const string& percorso0,
                            const string& percorso1,

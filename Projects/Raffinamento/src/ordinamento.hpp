@@ -79,7 +79,7 @@ namespace LibreriaOrdinamento {
     //L'idea di fondo del ciclo è quella di scandire il vettore scambiando ogni nodo col suo relativo genitore se l'etichetta del primo è maggiore del secondo;
     //tale confronto si ripete col prossimo genitore nella gerarchia finché il nuovo genitore ha un'etichetta maggiore o si è raggiunta la cima.
 
-    for(unsigned int i=1; i<v.size(); i++) //Si parte scandendo il secondo elemento della lista perché il primo nodo del mucchio binario non deve essere confrontato con nessun nodo
+    for(unsigned int i=1; i<n; i++) //Si parte scandendo il secondo elemento della lista perché il primo nodo del mucchio binario non deve essere confrontato con nessun nodo
     {
 
         //L'indice «f» rappresenta il nodo del figlio «corrente», ovvero di quello che si muove dinamicamente tra i genitori;
@@ -114,7 +114,7 @@ namespace LibreriaOrdinamento {
     }
 
 
-    //Questo ciclo «for» invece riordina la lista scambiando inizialmente il primo elemento con l'ultimo, successivamente riposizione il nuovo primo elemento
+    //Questo ciclo «for» invece riordina la lista scambiando inizialmente il primo elemento con l'ultimo, successivamente riposiziona il nuovo primo elemento
     //(coincidente con l'ultimo di prima) in modo tale che l'albero binario rimanente, escluso l'ultimo nodo, soddisfi le caratteristiche di un mucchio binario
     //descritte nel precedente ciclo; l'algoritmo viene ripetuto escludendo di volta in volta il primo elemento scambiato finché non finiscono i nodi del mucchio binario originale.
 
@@ -128,7 +128,7 @@ namespace LibreriaOrdinamento {
       mucchioBin[0]=bicerino;
 
       g=0; //Indice del nodo genitore in cima all'albero binario
-      f=2*g+1; //Indice del primo figlio del geniotre g
+      f=2*g+1; //Indice del primo figlio del genitore g
       bicerino=mucchioBin[0];
 
       //Questa condizione verifica che il nodo genitore ha almeno un nodo figlio contenuto nel parziale mucchio binario
